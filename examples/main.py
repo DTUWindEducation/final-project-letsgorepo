@@ -21,7 +21,7 @@ sys.path.insert(0, project_root)
 
 #
 from src.read_input import read_resource_calc_wref
-ref_wind_speed, ref_wind_direction, ref_wind_s_10, ref_wind_d_10 = read_resource_calc_wref('1997-1999.nc') #OBS this is for 100m
+ref_ws_100, ref_wd_100, ref_ws_10, ref_wd_10 = read_resource_calc_wref('1997-1999.nc')   #OBS this is for 100m
 
 from src.read_input import read_turbine
 output = read_turbine('NREL_Reference_5MW_126.csv')
