@@ -6,7 +6,7 @@ import pandas as pd
 from pathlib import Path
 import glob
 
-file = '1997-1999.nc'   #file to open
+file = '1997-1999.nc'  #file to open
 
 # We go outside the src folder to find the inputs folder
 THIS_FILE = Path(file).parent  # current script directory or use __file__
@@ -27,5 +27,17 @@ for nc_file in nc_files:
 
     # close the data 
     ds.close()
+    
+    lat = [7.75, 8.0, 7.75, 8.0]   #define latitudes
+    lon =  [55.5, 55.5, 55.75, 55.75]   #define longitudes
+
+    loc0 = (df['latitude'] == lat[0]) & (df['longitude'] == lon[0])
+    loc1 = (df['latitude'] == lat[1]) & (df['longitude'] == lon[1])
+    loc2 = (df['latitude'] == lat[2]) & (df['longitude'] == lon[2])
+    loc3 = (df['latitude'] == lat[3]) & (df['longitude'] == lon[3])
 
 print(df)
+print(loc0)
+print(loc1)
+print(loc2)
+print(loc3)
