@@ -7,8 +7,9 @@ def sort_four_locations(ref_w_100, ref_d_100, ref_w_10, ref_d_10, df):
     loc4: 55.75°N, 8°E'''
     
     # Define four locations
-    lat = [7.75, 8.0, 7.75, 8.0]   #define latitudes
-    lon =  [55.5, 55.5, 55.75, 55.75]   #define longitudes
+    lat = [55.5,55.5,55.75,55.75]
+    lon = [7.75,8,7.75,8]
+    #_____________TODO__________Maybe move the location definition to main????
 
     loc0 = (df['latitude'] == lat[0]) & (df['longitude'] == lon[0])
     loc1 = (df['latitude'] == lat[1]) & (df['longitude'] == lon[1])
@@ -17,7 +18,7 @@ def sort_four_locations(ref_w_100, ref_d_100, ref_w_10, ref_d_10, df):
 
     windspeed_loc0_100 = ref_w_100[loc0.values]
     windspeed_loc0_10 = ref_w_10[loc0.values]
-    windspeed_loc0 = windspeed_loc0_100 + windspeed_loc0_10
+    windspeed_loc0 = windspeed_loc0_100 + windspeed_loc0_10 #used for length of array, can be written better
     # Create a new DataFrame with repeated lat/lon and the wind values
     loc0_100m_sort = pd.DataFrame({
         'Latitude': [55.5] * len(windspeed_loc0),
@@ -32,4 +33,7 @@ def sort_four_locations(ref_w_100, ref_d_100, ref_w_10, ref_d_10, df):
         'Windspeed [m/s]': windspeed_loc0
     })
     Location0_windspeed = pd.concat([loc0_100m_sort, loc0_10m_sort], ignore_index=True)
-    print(Location0_windspeed)
+    return Location0_windspeed
+    #______________TODO___________Right now the wind direction is not included!!!!!!!________________________
+    #______________TODO___________This needs to repeat so that it print for the other three locations aswell.__________
+    #______________TODO___________Make the code smarter (not hardcode)___________________

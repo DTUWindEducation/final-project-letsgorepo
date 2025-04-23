@@ -6,6 +6,7 @@ import glob
 import csv
 
 def read_resource_calc_wref(file):  #'1997-1999.nc'
+    '''Docstring'''
     # We go outside the src folder to find the inputs folder
     THIS_FILE = Path(file).parent  # current script directory or use __file__
     inputs_dir = THIS_FILE.parent / 'inputs'  # inputs folder is at the same level as src
@@ -31,10 +32,10 @@ def read_resource_calc_wref(file):  #'1997-1999.nc'
         wind_direction_100 = (np.arctan2(df.iloc[:, 8], df.iloc[:, 7]) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
         # MAYBE THIS IS THE OTHER WAY AROUND ???????
 
-        print(f'wind speed at 10m: {wind_speed_10}')
-        print(f'wind direction at 10m: {wind_direction_10}')
-        print(f'wind speed at 100m: {wind_speed_100}')
-        print(f'wind direction at 100m: {wind_direction_100}')
+        #print(f'wind speed at 10m: {wind_speed_10}')
+        #print(f'wind direction at 10m: {wind_direction_10}')
+        #print(f'wind speed at 100m: {wind_speed_100}')
+        #print(f'wind direction at 100m: {wind_direction_100}')
 
         # # save as CSV
         # #csv_path = "1997-1999.csv"
@@ -62,5 +63,4 @@ def read_turbine(file):
     size = w15.shape[0]
     Ct15 = np.zeros((size))
     
-    #print(Ct15)
     return turb_5, turb_15

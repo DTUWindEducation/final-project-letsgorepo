@@ -5,6 +5,7 @@ import glob                         #
 import sys                          #
 import os                           #
 
+
 #_____Start timer for running time of code_____
 start_time = time.time()            # Start timer
 
@@ -30,6 +31,16 @@ output = read_turbine('NREL_Reference_5MW_126.csv')
 
 from src.sort_read_inputs import sort_four_locations
 location1 = sort_four_locations(ref_ws_100, ref_wd_100, ref_ws_10, ref_wd_10, df)
+
+from src.interpolate_4_loc import interpolate_4_loc
+loc1 = [55.5, 7.75]
+loc2 = [55.5, 8.0]
+loc3 = [55.75, 7.75]
+loc4 = [55.75, 8.0]
+coord = [55.6, 7.9]
+
+val = interpolate_4_loc(loc1, loc2, loc3, loc4, coord)
+#print(f"Interpolated wind speed: {val} m/s")
 
 #_____End timer____
 end_time = time.time()                                      # End timer
