@@ -20,4 +20,4 @@ def interpolate_4_loc(loc1,loc2,loc3,loc4,coord):
     # New points to interpolate for
     return float(result[0])
     # Data to interpolate
-    #__________TODO________make the interpolation work for our results....
+    #__________TODO________make the

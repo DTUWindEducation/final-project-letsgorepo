@@ -27,3 +27,4 @@ for nc_file in nc_files:
 
     # close the data 
     ds.close()
+    print(df)

@@ -18,32 +18,43 @@ def read_resource_calc_wref(file):  #'1997-1999.nc'
 
     for nc_file in nc_files:
         # print(f"Processing file: {nc_file}")
-    
+        
         # Open the .nc file using xarray
-        ds = xr.open_dataset(nc_file, engine="netcdf4")
-    
-        # Convert the dataset to a DataFrame
-        df = ds.to_dataframe().reset_index()  #  
+        ds_data = xr.open_dataset(nc_file, engine="netcdf4")
 
-        # Calculate reference windspeed at 100m
-        wind_speed_10 = np.sqrt(df.iloc[:, 5]**2 + df.iloc[:, 6]**2)  # Calculate wind speed [m/s]
-        wind_direction_10 = (np.arctan2(df.iloc[:, 6], df.iloc[:, 5]) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
-        wind_speed_100 = np.sqrt(df.iloc[:, 7]**2 + df.iloc[:, 8]**2)  # Calculate wind speed [m/s]
-        wind_direction_100 = (np.arctan2(df.iloc[:, 8], df.iloc[:, 7]) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
+        # Calculate reference windspeed at 10m and 100m height
+        wind_speed_10 = np.sqrt(ds_data.u10**2 + ds_data.v10**2)  # Calculate wind speed [m/s]
+        wind_direction_10 = (np.arctan2(ds_data.v10, ds_data.u10) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
+        wind_speed_100 = np.sqrt(ds_data.u100**2 + ds_data.v100**2)  # Calculate wind speed [m/s]
+        wind_direction_100 = (np.arctan2(ds_data.v100, ds_data.u100) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
         # MAYBE THIS IS THE OTHER WAY AROUND ???????
-
-        #print(f'wind speed at 10m: {wind_speed_10}')
-        #print(f'wind direction at 10m: {wind_direction_10}')
-        #print(f'wind speed at 100m: {wind_speed_100}')
-        #print(f'wind direction at 100m: {wind_direction_100}')
+        height_10 = np.full_like(wind_speed_10, 10)  # Create an array of 10m with the same shape as wind_speed_10
+        height_100 = np.full_like(wind_speed_100, 100)  # Create an array of 100m with the same shape as wind_speed_100
+        # Construct the height array
+        height_10 = xr.DataArray(height_10, dims=('valid_time', 'latitude', 'longitude'))
+        height_100 = xr.DataArray(height_100, dims=('valid_time', 'latitude', 'longitude'))
+        
+        # Concatenate wind speeds and directions
+        wind_speed = xr.concat([wind_speed_10, wind_speed_100], dim='valid_time')
+        wind_direction = xr.concat([wind_direction_10, wind_direction_100], dim='valid_time')
+        height = xr.concat([height_10, height_100], dim='valid_time')  # Concatenate the height arrays
+        
+        #Construct the dataset
+        # ds_data['Height [m]'] = ('valid_time', 'latitude', 'longitude', height)
+        # ds_data['Wind speed [m/s]'] = ('valid_time', 'latitude', 'longitude', wind_speed)
+        # ds_data['Wind direction [deg]'] = ('valid_time', 'latitude', 'longitude', wind_direction)
+        # ds_data['Latitude'] = ('valid time', ds_data.latitude)
+        # ds_data['Longitude'] = ('vali time', ds_data.longitude)
+        
+        # Convert the dataset to a DataFrame for printing
+        df_data = ds_data.to_dataframe().reset_index()  # 
 
         # # save as CSV
         # #csv_path = "1997-1999.csv"
         # #df.to_csv(csv_path, index=False)
         
-        # close the data 
-        ds.close()
-        return wind_speed_100, wind_direction_100, wind_speed_10, wind_direction_10
+        return len(ds_data)
+        #return ds_data, df_data
 
 def read_turbine(file):
     # We go outside the src folder to find the inputs folder

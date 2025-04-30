@@ -20,17 +20,21 @@ project_root = os.path.abspath(os.path.join(current_dir, '..'))
 # Add the project root to the system path so Python can find the 'src' package
 sys.path.insert(0, project_root)
 
-#
-from src.open_nc_files import df
-
 from src.read_input import read_resource_calc_wref
-ref_ws_100, ref_wd_100, ref_ws_10, ref_wd_10 = read_resource_calc_wref('1997-1999.nc')   #OBS this is for 100m
+out1 = read_resource_calc_wref('1997-1999.nc')   #OBS this is for 100m
+print(out1)
 
 from src.read_input import read_turbine
 output = read_turbine('NREL_Reference_5MW_126.csv')
+#print(output)
+
+# Define four locations
+lat = [55.5, 55.75]
+lon = [7.75, 8]
 
 from src.sort_read_inputs import sort_four_locations
-location1 = sort_four_locations(ref_ws_100, ref_wd_100, ref_ws_10, ref_wd_10, df)
+location1 = sort_four_locations(ref_ws_100, ref_wd_100, ref_ws_10, ref_wd_10, ds_ncfiles, lat, lon)
+#print(location1)
 
 from src.interpolate_4_loc import interpolate_4_loc
 loc1 = [55.5, 7.75]
