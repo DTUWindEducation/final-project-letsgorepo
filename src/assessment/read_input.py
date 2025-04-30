@@ -25,13 +25,12 @@ def read_resource_calc_wref(file):  #'1997-1999.nc'
         # Convert the dataset to a DataFrame
         df = ds.to_dataframe().reset_index()  #  
 
-        # Calculate reference windspeed at 100m
-        wind_speed_10 = np.sqrt(df.iloc[:, 5]**2 + df.iloc[:, 6]**2)  # Calculate wind speed [m/s]
-        wind_direction_10 = (np.arctan2(df.iloc[:, 6], df.iloc[:, 5]) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
-        wind_speed_100 = np.sqrt(df.iloc[:, 7]**2 + df.iloc[:, 8]**2)  # Calculate wind speed [m/s]
-        wind_direction_100 = (np.arctan2(df.iloc[:, 8], df.iloc[:, 7]) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
-        # MAYBE THIS IS THE OTHER WAY AROUND ???????
-
+        # Calculate reference windspeed at 10m and 100m
+        df['wind_speed_10'] = np.sqrt(df.iloc[:, 7]**2 + df.iloc[:, 8]**2)  # Calculate wind speed [m/s]
+        df['wind_direction_10'] = (270 - np.arctan2(df.iloc[:, 8], df.iloc[:, 7]) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
+        df['wind_speed_100'] = np.sqrt(df.iloc[:, 9]**2 + df.iloc[:, 10]**2)  # Calculate wind speed [m/s]
+        df['wind_direction_100'] = (270 - np.arctan2(df.iloc[:, 10], df.iloc[:, 9]) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
+        
         #print(f'wind speed at 10m: {wind_speed_10}')
         #print(f'wind direction at 10m: {wind_direction_10}')
         #print(f'wind speed at 100m: {wind_speed_100}')
@@ -43,8 +42,9 @@ def read_resource_calc_wref(file):  #'1997-1999.nc'
         
         # close the data 
         ds.close()
-        return wind_speed_100, wind_direction_100, wind_speed_10, wind_direction_10
-
+        return df
+        #return wind_speed_100, wind_direction_100, wind_speed_10, wind_direction_10
+        
 def read_turbine(file):
     # We go outside the src folder to find the inputs folder
     THIS_FILE = Path(file).parent  # current script directory or use __file__

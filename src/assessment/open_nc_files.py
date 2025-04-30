@@ -8,7 +8,7 @@ import xarray as xr
 from pathlib import Path
 import glob
 
-file = '2015-2017.nc'  #file to open
+file = '1997-1999.nc'  #file to open
 
 # We go outside the src folder to find the inputs folder
 THIS_FILE = Path(file).parent  # current script directory or use __file__
@@ -29,4 +29,4 @@ for nc_file in nc_files:
 
     # close the data 
     ds.close()
-print(df)
+#print(df)

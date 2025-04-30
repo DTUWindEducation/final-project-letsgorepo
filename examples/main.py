@@ -20,27 +20,34 @@ project_root = os.path.abspath(os.path.join(current_dir, '..'))
 # Add the project root to the system path so Python can find the 'src' package
 sys.path.insert(0, project_root)
 
-#
+
 from assessment.open_nc_files import df
 
+#this function works
 from assessment.read_input import read_resource_calc_wref
-ref_ws_100, ref_wd_100, ref_ws_10, ref_wd_10 = read_resource_calc_wref('1997-1999.nc')   #OBS this is for 100m
+df = read_resource_calc_wref('1997-1999.nc')   #OBS this is for 100m
+#print(f"read_resource_results: \n", df[['wind_speed_10', 'wind_direction_10', 'wind_speed_100', 'wind_direction_100']])
 
+#
 from assessment.read_input import read_turbine
 output = read_turbine('NREL_Reference_5MW_126.csv')
 
+#this function also works
 from assessment.sort_read_inputs import sort_four_locations
-location1 = sort_four_locations(ref_ws_100, ref_wd_100, ref_ws_10, ref_wd_10, df)
-print(location1)
-from assessment.interpolate_4_loc import interpolate_4_loc
-loc1 = [55.5, 7.75]
-loc2 = [55.5, 8.0]
-loc3 = [55.75, 7.75]
-loc4 = [55.75, 8.0]
-coord = [55.6, 7.9]
+locations_sorted = sort_four_locations(df)
+#print(f"locations_sorted = \n", locations_sorted)
 
-val = interpolate_4_loc(loc1, loc2, loc3, loc4, coord)
-#print(f"Interpolated wind speed: {val} m/s")
+#works but with the help of GPT so dont know why /lol
+from assessment.interpolate_4_loc import interpolate_4_loc
+target_coord = [55.6, 7.9]
+interp_ws_10m, interp_ws_100m = interpolate_4_loc(locations_sorted, target_coord)
+#print("Interpolated wind speed at 10m (first 5):", interp_ws_10m[:5])
+#print("Interpolated wind speed at 100m (first 5):", interp_ws_100m[:5])
+
+from assessment.interpolate_4_loc import compute_wind_speed_at_height
+ws_at_80m = compute_wind_speed_at_height(locations_sorted, target_height=80)
+print(ws_at_80m)
+
 
 #_____End timer____
 end_time = time.time()                                      # End timer
