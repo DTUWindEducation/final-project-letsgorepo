@@ -1,4 +1,4 @@
-'''Open .nc files'''
+'''Open .nc files''' #This is an extra file, that can run the .nc files, so an overview can be obtained
 #______Packages_____
 import xarray as xr
 import numpy as np
@@ -27,17 +27,3 @@ for nc_file in nc_files:
 
     # close the data 
     ds.close()
-    
-    lat = [7.75, 8.0, 7.75, 8.0]   #define latitudes
-    lon =  [55.5, 55.5, 55.75, 55.75]   #define longitudes
-
-    loc0 = (df['latitude'] == lat[0]) & (df['longitude'] == lon[0])
-    loc1 = (df['latitude'] == lat[1]) & (df['longitude'] == lon[1])
-    loc2 = (df['latitude'] == lat[2]) & (df['longitude'] == lon[2])
-    loc3 = (df['latitude'] == lat[3]) & (df['longitude'] == lon[3])
-
-print(df)
-print(loc0)
-print(loc1)
-print(loc2)
-print(loc3)
