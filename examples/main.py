@@ -22,13 +22,14 @@ sys.path.insert(0, project_root)
 
 from src.read_input import read_resource_calc_wref
 data_wind_df = read_resource_calc_wref('1997-1999.nc')  #OBS this is for 100m
+print(data_wind_df)
 
 from src.read_input import read_turbine
 data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
 
 coord = [5.61,7.6] #define specific coordinates to interpolate from
 from src.interpolate_4_loc import interpolate_4_loc
-val = interpolate_4_loc(data_wind_df, coord)
+#val = interpolate_4_loc(data_wind_df, coord)
 #print(f"Interpolated wind speed: {val} m/s")
 
 #_____End timer____
