@@ -27,7 +27,7 @@ print(data_wind_df)
 from assessment.read_input import read_turbine
 data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
 
-coord = (55.5,7.75) #define specific coordinates to interpolate from
+coord = (55.75,7.75) #define specific coordinates to interpolate from
 from assessment.interpolate_4_loc import interpolate_4_loc
 val = interpolate_4_loc(data_wind_df, coord)
 print(val)
