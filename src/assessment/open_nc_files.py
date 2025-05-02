@@ -26,7 +26,7 @@ for nc_file in nc_files:
     
     # Convert the dataset to a DataFrame
     df = ds.to_dataframe().reset_index()  #  
-
+    
     # close the data 
     ds.close()
-#print(df)
+    print(df)

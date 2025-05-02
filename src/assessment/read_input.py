@@ -34,8 +34,8 @@ def read_resource_calc_wref(file):  #'1997-1999.nc'
         df_data['wind_speed_10'] = np.sqrt(df_data['u10']**2 + df_data['v10']**2)  # Calculate wind speed [m/s]
         df_data['wind_speed_100'] = np.sqrt(df_data['u100']**2 + df_data['v100']**2)  # Calculate wind speed [m/s]
         # Calculate reference wind direction at 10m and 100m height
-        df_data['wind_direction_10'] = (270 - np.arctan2(df_data['v10'], df_data['u10']) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
-        df_data['wind_direction_100'] = (270 - np.arctan2(df_data['v100'], df_data['u100']) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
+        df_data['wind_direction_10'] = (270 - np.arctan2(df_data['v10'], df_data['u10']) * 180 / np.pi) % 360  # Calculate wind direction [deg]
+        df_data['wind_direction_100'] = (270 - np.arctan2(df_data['v100'], df_data['u100']) * 180 / np.pi) % 360  # Calculate wind direction [deg]
         
         # Reconstruct the data fram and rename
         df_long = pd.concat([

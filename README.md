@@ -1,5 +1,6 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/zjSXGKeR)
 
+[! '*' means it's a mandatory rubric for pass]
 # Notes for the readme
 OBS!!!!! the provided input .nc files have latitude and longitude the other way around
 The .nc files are wind ressource
@@ -13,11 +14,11 @@ Is there an extension for opening .nc files?
 
 Team: [ADD TEXT HERE!]
 
-## Overview
+## Overview of package*
 
 [ADD TEXT HERE!]
 
-## Quick-start guide
+## Quick-start guide (Installation instructions*)
 main.py
     Explenation
 ________________________________________________________________________________
@@ -50,9 +51,17 @@ EXTRA
 open_nc_files.py
     Opens the .nc files since these files cannot be opened. It was used to know what columns to consider when calculating. 
 
-## Architecture
+## Code Architecture (include diagram)*
 
 [ADD TEXT HERE!]
+
+## Classes description*
+
+[ADD TEXT HERE!]
+
+## Git flow/ collaboration methodology*
+
+[ADD TEXT HERE !]
 
 ## Peer review
 

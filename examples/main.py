@@ -22,15 +22,29 @@ sys.path.insert(0, project_root)
 
 from assessment.read_input import read_resource_calc_wref
 data_wind_df = read_resource_calc_wref('1997-1999.nc')  #OBS this is for 100m
-print(data_wind_df)
+print(f"ref wind speed for 2 heights: \n", data_wind_df)
 
-from assessment.read_input import read_turbine
-data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
+# from assessment.read_input import read_turbine
+# data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
 
-coord = [5.61,7.6] #define specific coordinates to interpolate from
-from assessment.interpolate_4_loc import interpolate_4_loc
-#val = interpolate_4_loc(data_wind_df, coord)
-#print(f"Interpolated wind speed: {val} m/s")
+
+# from assessment.interpolate_4_loc import interpolate_4_loc
+# coord = [5.61,7.6] #define specific coordinates to interpolate from
+# val = interpolate_4_loc(data_wind_df, coord)
+# print(f"interpolated value = \n", val)
+
+from assessment.interpolate_4_loc import compute_wind_speed_at_height
+from assessment.interpolate_4_loc import compute_alpha_from_two_heights
+df_alpha = compute_alpha_from_two_heights(data_wind_df)
+target_height = 80
+ws_at_80m = compute_wind_speed_at_height(
+    data_wind_df,
+    target_height,
+    ref_height=100,
+    df_alpha = df_alpha
+)
+print(f"wind speed at {target_height} [m]: \n", ws_at_80m)
+# print(df_alpha)
 
 #_____End timer____
 end_time = time.time()                                      # End timer
