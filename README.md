@@ -69,3 +69,7 @@ open_nc_files.py
 
 ## Import in Anaconda prompt
 conda install anaconda::xarray
+
+windrose:
+- Open Anaconda prompt ans go to folder "cd Git 46120\final-project-letsgorepo" or whatever path you have.
+- pip install windrose

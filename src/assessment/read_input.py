@@ -55,7 +55,7 @@ def read_resource_calc_wref(file):  #'1997-1999.nc'
         # #csv_path = "1997-1999.csv"
         # #df.to_csv(csv_path, index=False)
         
-        return df_long
+        return df_long, df_data
 
 def read_turbine(file):
     # We go outside the src folder to find the inputs folder
