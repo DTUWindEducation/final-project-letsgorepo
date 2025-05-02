@@ -2,6 +2,7 @@
 from scipy.interpolate import RegularGridInterpolator
 import numpy as np
 import pandas as pd
+from pathlib import Path            # For identifying path of file
 
 def interpolate_speed(wr_data_df, target_coord):
         """
@@ -69,6 +70,18 @@ def interpolate_speed(wr_data_df, target_coord):
         result_df = results[0]
         for df in results[1:]:
             result_df = result_df.merge(df, on='time', how='outer')
+        
+        # save result
+        # --- Define paths ---
+        current_dir = Path(__file__).parent.resolve()  # Folder where the script is located
+        output_dir = current_dir.parent.parent / "outputs"  # Go up 2 levels, then into "output"
+
+        # --- Create the output folder if it doesn't exist ---
+        output_dir.mkdir(exist_ok=True)  
+
+        # --- Save `result_df` to CSV in the output folder ---
+        output_file = output_dir / "windspeed_interpolated_results.csv"  # Define filename
+        result_df.to_csv(output_file, index=False)  # Save as CSV (no index)
 
         return result_df.sort_values('time')
 
@@ -245,5 +258,19 @@ def interpolate_wind_direction(wr_data_df, target_coord):
     result_df = results[0]
     for df in results[1:]:
         result_df = result_df.merge(df, on='time', how='outer')
+    
+    
+    # save result
+    # --- Define paths ---
+    current_dir = Path(__file__).parent.resolve()  # Folder where the script is located
+    output_dir = current_dir.parent.parent / "outputs"  # Go up 2 levels, then into "output"
+
+    # --- Create the output folder if it doesn't exist ---
+    output_dir.mkdir(exist_ok=True)  
+
+    # --- Save `result_df` to CSV in the output folder ---
+    output_file = output_dir / "winddirection_interpolated_results.csv"  # Define filename
+    result_df.to_csv(output_file, index=False)  # Save as CSV (no index)
+
 
     return result_df.sort_values('time')

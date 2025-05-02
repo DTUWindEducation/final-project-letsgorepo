@@ -4,6 +4,7 @@ from pathlib import Path            # For identifying path of file
 import glob                         #
 import sys                          #
 import os                           #
+import pandas as pd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),'..','src')))
 
 #_____Start timer for running time of code_____
@@ -28,12 +29,25 @@ from assessment.read_input import read_turbine
 data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
 
 coord = (55.75,7.8) #define specific coordinates to interpolate from
-from assessment.interpolate_4_loc import interpolate_speed, interpolate_wind_direction
-val_speed = interpolate_speed(data_wind_df, coord)
-print(val_speed)
-val_dir = interpolate_wind_direction(df_data, coord)
-print(val_dir)
-
+#____KEEP!!!____
+#from assessment.interpolate_4_loc import interpolate_speed, interpolate_wind_direction
+#val_speed = interpolate_speed(data_wind_df, coord)
+#print(val_speed)
+#val_dir = interpolate_wind_direction(df_data, coord)
+#print(val_dir)
+#____KEEP!!!____
+#____DELETE!!!____
+THIS_FILE = Path('main.py').parent  # current script directory or use __file__
+outputs_dir = THIS_FILE.parent / 'outputs'  # inputs folder is at the same level as src
+val_dir = outputs_dir / 'winddirection_interpolated_results.csv'
+val_sp = outputs_dir / 'windspeed_interpolated_results.csv'
+df_wind_direction = pd.read_csv(val_dir)
+df_wind_speed = pd.read_csv(val_sp)
+val = df_wind_speed.iloc[0,1]
+print(val)
+#____DELETE!!!____
+from assessment.wind_rose import plot_wind_rose
+windrose = plot_wind_rose(df_wind_speed, df_wind_direction)
 #_____End timer____
 end_time = time.time()                                      # End timer
 running_time = end_time - start_time                        # Difference=time
