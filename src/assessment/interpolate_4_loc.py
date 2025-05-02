@@ -275,7 +275,7 @@ def interpolate_wind_direction(wr_data_df, target_coord):
 
     return result_df.sort_values('time')
   
-  def compute_alpha_from_two_heights(df):
+def compute_alpha_from_two_heights(df):
     """
     Compute wind shear exponent alpha based on ref_wind_speed at 10m and 100m.
     Assumes df contains rows for both heights for each (time, lat, lon).
