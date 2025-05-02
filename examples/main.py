@@ -21,16 +21,18 @@ project_root = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.insert(0, project_root)
 
 from assessment.read_input import read_resource_calc_wref
-data_wind_df = read_resource_calc_wref('1997-1999.nc')  #OBS this is for 100m
+data_wind_df, df_data = read_resource_calc_wref('1997-1999.nc')  #OBS this is for 100m
 print(data_wind_df)
 
 from assessment.read_input import read_turbine
 data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
 
-coord = (55.75,7.75) #define specific coordinates to interpolate from
-from assessment.interpolate_4_loc import interpolate_4_loc
-val = interpolate_4_loc(data_wind_df, coord)
-print(val)
+coord = (55.75,7.8) #define specific coordinates to interpolate from
+from assessment.interpolate_4_loc import interpolate_speed, interpolate_wind_direction
+val_speed = interpolate_speed(data_wind_df, coord)
+print(val_speed)
+val_dir = interpolate_wind_direction(df_data, coord)
+print(val_dir)
 
 #_____End timer____
 end_time = time.time()                                      # End timer
