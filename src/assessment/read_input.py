@@ -5,8 +5,13 @@ from pathlib import Path
 import glob
 import csv
 
+# Test ready
 def read_resource_calc_wref(file):  #'1997-1999.nc'
-    '''Docstring'''
+    '''Calculate the reference wind speed and direction for the four locations 
+    loc1: 55.5°N, 7.75°E 
+    loc2: 55.5°N, 8°E
+    loc3: 55.75°N, 7.75°E
+    loc4: 55.75°N, 8°E'''
     # We go outside the src folder to find the inputs folder
     THIS_FILE = Path(file).parent  # current script directory or use __file__
     inputs_dir = THIS_FILE.parent / 'inputs'  # inputs folder is at the same level as src
@@ -25,13 +30,14 @@ def read_resource_calc_wref(file):  #'1997-1999.nc'
         # Convert the dataset to a DataFrame for printing
         df_data = ds_data.to_dataframe().reset_index()  # 
 
-        # Calculate reference windspeed at 10m and 100m height
+        # Calculate reference wind speed at 10m and 100m height
         df_data['wind_speed_10'] = np.sqrt(df_data['u10']**2 + df_data['v10']**2)  # Calculate wind speed [m/s]
-        df_data['wind_direction_10'] = (270 - np.arctan2(df_data['v10'], df_data['u10']) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
         df_data['wind_speed_100'] = np.sqrt(df_data['u100']**2 + df_data['v100']**2)  # Calculate wind speed [m/s]
+        # Calculate reference wind direction at 10m and 100m height
+        df_data['wind_direction_10'] = (270 - np.arctan2(df_data['v10'], df_data['u10']) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
         df_data['wind_direction_100'] = (270 - np.arctan2(df_data['v100'], df_data['u100']) * 180 / np.pi + 360) % 360  # Calculate wind direction [deg]
-        # MAYBE THIS IS THE OTHER WAY AROUND ???????
         
+        # Reconstruct the data fram and rename
         df_long = pd.concat([
         df_data[['wind_speed_10', 'wind_direction_10','latitude', 'longitude', 'valid_time']].rename(columns={
             'wind_speed_10': 'ref_wind_speed',
@@ -49,8 +55,7 @@ def read_resource_calc_wref(file):  #'1997-1999.nc'
         # #csv_path = "1997-1999.csv"
         # #df.to_csv(csv_path, index=False)
         
-        return df_long
-        #return ds_data, df_data
+        return df_long, df_data
 
 def read_turbine(file):
     # We go outside the src folder to find the inputs folder
