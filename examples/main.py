@@ -35,16 +35,16 @@ print(val_speed)
 val_dir = interpolate_wind_direction(df_data, coord)
 print(val_dir)
 
-from assessment.Weibulldistribution import process_weibull
-#from assessment.weibull2 import process_weibull
-
-shape_10m, scale_10m = process_weibull(data_wind_df, coord, 10)
-print(f"Returned Weibull Parameters for 10m: Shape = {shape_10m:.2f}, Scale = {scale_10m:.2f}")
-shape_100m, scale_100m = process_weibull(data_wind_df, coord, 100)
-print(f"Returned Weibull Parameters for 100m: Shape = {shape_100m:.2f}, Scale = {scale_100m:.2f}")
-
+from assessment.Weibull import process_weibull
+c_10m, k_10m = process_weibull(data_wind_df, coord, 10)
+print(f"Returned Weibull Parameters for 10m: Scale (c) = {c_10m:.2f}, Shape (k) = {k_10m:.2f}")
+c_100m, k_100m = process_weibull(data_wind_df, coord, 100)
+print(f"Returned Weibull Parameters for 100m: Scale (c) = {c_100m:.2f}, Shape (k) = {k_100m:.2f}")
 
 #_____End timer____
 end_time = time.time()                                      # End timer
 running_time = end_time - start_time                        # Difference=time
 print(f"Running time = {running_time:.2f}s")                # Print timer
+print("DataFrame loaded:", data_wind_df.head())
+print("Interpolated speed:", val_speed)
+print("Interpolated direction:", val_dir)
