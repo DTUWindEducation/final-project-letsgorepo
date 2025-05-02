@@ -4,7 +4,8 @@ from pathlib import Path            # For identifying path of file
 import glob                         #
 import sys                          #
 import os                           #
-
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),'..','src')))
+import pandas as pd
 
 #_____Start timer for running time of code_____
 start_time = time.time()            # Start timer
@@ -20,17 +21,28 @@ project_root = os.path.abspath(os.path.join(current_dir, '..'))
 # Add the project root to the system path so Python can find the 'src' package
 sys.path.insert(0, project_root)
 
-from src.read_input import read_resource_calc_wref
-data_wind_df = read_resource_calc_wref('1997-1999.nc')  #OBS this is for 100m
+from assessment.read_input import read_resource_calc_wref
+data_wind_df, df_data = read_resource_calc_wref('1997-1999.nc')  #OBS this is for 100m
 print(data_wind_df)
 
-from src.read_input import read_turbine
+from assessment.read_input import read_turbine
 data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
 
-coord = [5.61,7.6] #define specific coordinates to interpolate from
-from src.interpolate_4_loc import interpolate_4_loc
-#val = interpolate_4_loc(data_wind_df, coord)
-#print(f"Interpolated wind speed: {val} m/s")
+coord = (55.75,7.8) #define specific coordinates to interpolate from
+from assessment.interpolate_4_loc import interpolate_speed, interpolate_wind_direction
+val_speed = interpolate_speed(data_wind_df, coord)
+print(val_speed)
+val_dir = interpolate_wind_direction(df_data, coord)
+print(val_dir)
+
+from assessment.Weibulldistribution import process_weibull
+#from assessment.weibull2 import process_weibull
+
+shape_10m, scale_10m = process_weibull(data_wind_df, coord, 10)
+print(f"Returned Weibull Parameters for 10m: Shape = {shape_10m:.2f}, Scale = {scale_10m:.2f}")
+shape_100m, scale_100m = process_weibull(data_wind_df, coord, 100)
+print(f"Returned Weibull Parameters for 100m: Shape = {shape_100m:.2f}, Scale = {scale_100m:.2f}")
+
 
 #_____End timer____
 end_time = time.time()                                      # End timer
