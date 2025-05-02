@@ -1,8 +1,10 @@
-'''Open .nc files''' #This is an extra file, that can run the .nc files, so an overview can be obtained
+'''
+Open .nc files
+This is an extra file, that can run the .nc files,
+so an overview can be obtained.
+''' 
 #______Packages_____
 import xarray as xr
-import numpy as np
-import pandas as pd
 from pathlib import Path
 import glob
 
@@ -24,8 +26,7 @@ for nc_file in nc_files:
     
     # Convert the dataset to a DataFrame
     df = ds.to_dataframe().reset_index()  #  
-
+    
     # close the data 
     ds.close()
     print(df)
-    
