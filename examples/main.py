@@ -30,11 +30,15 @@ data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
 
 coord = (55.75,7.8) #define specific coordinates to interpolate from
 #____KEEP!!!____
-#from assessment.interpolate_4_loc import interpolate_speed, interpolate_wind_direction
-#val_speed = interpolate_speed(data_wind_df, coord)
-#print(val_speed)
-#val_dir = interpolate_wind_direction(df_data, coord)
-#print(val_dir)
+# from assessment.interpolate_4_loc import interpolate_speed, interpolate_wind_direction
+# val_speed = interpolate_speed(data_wind_df, coord)
+# print(val_speed)
+# val_dir = interpolate_wind_direction(df_data, coord)
+# print(val_dir)
+from assessment.interpolate_4_loc import interpolate_max_ws_100
+height = 100 #or 10
+result = interpolate_max_ws_100(data_wind_df, height)
+print(result)
 #____KEEP!!!____
 #____DELETE!!!____
 THIS_FILE = Path('main.py').parent  # current script directory or use __file__
@@ -44,7 +48,7 @@ val_sp = outputs_dir / 'windspeed_interpolated_results.csv'
 df_wind_direction = pd.read_csv(val_dir)
 df_wind_speed = pd.read_csv(val_sp)
 val = df_wind_speed.iloc[0,1]
-print(val)
+#print(val)
 #____DELETE!!!____
 
 from assessment.interpolate_4_loc import compute_wind_speed_at_height
@@ -57,7 +61,7 @@ ws_at_80m = compute_wind_speed_at_height(
     ref_height=100,
     df_alpha = df_alpha
 )
-print(f"wind speed at {target_height} [m]: \n", ws_at_80m)
+#print(f"wind speed at {target_height} [m]: \n", ws_at_80m)
 # print(df_alpha)
 
 from assessment.wind_rose import plot_wind_rose

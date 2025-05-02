@@ -3,6 +3,7 @@ from scipy.interpolate import RegularGridInterpolator
 import numpy as np
 import pandas as pd
 from pathlib import Path            # For identifying path of file
+from scipy.interpolate import RectBivariateSpline
 
 def interpolate_speed(wr_data_df, target_coord):
         """
@@ -85,93 +86,85 @@ def interpolate_speed(wr_data_df, target_coord):
 
         return result_df.sort_values('time')
 
-    # wr_data_df = wr_data_df[wr_data_df['height'] == height].copy()
-    # wr_data_df = wr_data_df.sort_values('time')
+import numpy as np
+import pandas as pd
+from scipy.interpolate import RectBivariateSpline
+from scipy.interpolate import LinearNDInterpolator
 
-    # times = wr_data_df['time'].unique()
-    # interpolated = []
+# def interpolate_max_ws_100(wr_data_df):
+#     wind_col = 'ref_wind_speed'  # Adjust if needed
 
-    # for t in times:
-    #     df_t = wr_data_df[wr_data_df['time'] == t]
+#     df_filtered = wr_data_df[wr_data_df['height'] == 100]
+#     unique_locs = (
+#         df_filtered
+#         .sort_values(['latitude', 'longitude'])
+#         .drop_duplicates(subset=['latitude', 'longitude'], keep='first')
+#     )
 
-    #     # Get lat/lon grid
-    #     latitudes = sorted(df_t['latitude'].unique())
-    #     longitudes = sorted(df_t['longitude'].unique())
+#     # Get points and values
+#     points = unique_locs[['latitude', 'longitude']].to_numpy()
+#     values = unique_locs[wind_col].to_numpy()
 
-    #     if len(latitudes) != 2 or len(longitudes) != 2:
-    #         raise ValueError(f"Expected 2x2 grid, got {len(latitudes)}x{len(longitudes)} at time {t}")
+#     # Build interpolator
+#     interpolator = LinearNDInterpolator(points, values)
 
-    #     # Build wind grid
-    #     wind_grid = np.empty((2, 2))
-    #     for i, lat in enumerate(latitudes):
-    #         for j, lon in enumerate(longitudes):
-    #             value = df_t[(df_t['latitude'] == lat) & (df_t['longitude'] == lon)]['ref_wind_speed'].values
-    #             if len(value) == 1:
-    #                 wind_grid[i, j] = value[0]
-    #             else:
-    #                 raise ValueError(f"Ambiguous or missing value at lat={lat}, lon={lon} for time {t}")
+#     # Define grid within data bounds
+#     lat_vals = np.linspace(points[:, 0].min(), points[:, 0].max(), 100)
+#     lon_vals = np.linspace(points[:, 1].min(), points[:, 1].max(), 100)
+#     lat_grid, lon_grid = np.meshgrid(lat_vals, lon_vals)
 
-    #     # Interpolate
-    #     interp = RegularGridInterpolator((latitudes, longitudes), wind_grid, method='linear')
-    #     interpolated.append(interp([target_coord])[0])
-    #return interpolated_series.head()
-    #return np.array(interpolated), times
+#     # Evaluate interpolator
+#     interp_values = interpolator(lat_grid, lon_grid)
 
-# def interpolate_4_loc(wr_data_df, target_coord):
-#     '''
-#     Interpolate wind speed and direction at 10m and 100m heights for a given location
-#     from 4 surrounding stations over time.
+#     # Mask NaNs and find max
+#     interp_values = np.nan_to_num(interp_values, nan=-9999)
+#     max_idx = np.unravel_index(np.argmax(interp_values), interp_values.shape)
+#     max_lat = lat_grid[max_idx]
+#     max_lon = lon_grid[max_idx]
+#     max_wind = interp_values[max_idx]
+
+#     return (max_lat, max_lon, max_wind)
+
+
+def interpolate_max_ws_100(wr_data_df, height):
+    lat_range = np.arange(55.5, 55.75, 0.01)
+    lon_range = np.arange(7.75, 8, 0.01)
+    # Create a mesh grid
+    lat_grid, lon_grid = np.meshgrid(lat_range, lon_range)
+
+    # Flatten and combine to (lat, lon) tuples
+    grid_points = list(zip(lat_grid.ravel(), lon_grid.ravel()))
+
+    # Filter rows where height is 100
+    filtered_df = wr_data_df[wr_data_df['height'] == height]
+
+    # Select first 4 rows where ref_wind_speed meets the condition
+    # Ensure you're taking the first 4 unique lat, lon pairs
+    first_4_values = filtered_df[['latitude', 'longitude', 'ref_wind_speed']].drop_duplicates(subset=['latitude', 'longitude'])
+
+    points = first_4_values[['latitude', 'longitude']].to_numpy()  # Lat, Lon pairs
+    ref_wind_speed = first_4_values['ref_wind_speed'].to_numpy()  # Corresponding ref_wind_speed values
     
-#     target_coord: [lat, lon]
-#     '''
+    # Build interpolator
+    interpolator = LinearNDInterpolator(points,ref_wind_speed)
 
-#     # Sort by time to ensure correct grouping
-#     wr_data_df = wr_data_df.sort_values('time').reset_index(drop=True)
+    #Create a new list with interpolated values for each grid point
+    interpolated_values = []
+    for i in grid_points:
+        interpolated_value = interpolator(np.array(i))  # Get interpolated wind speed for this point
+        interpolated_values.append((i[0], i[1], interpolated_value))  # Append the (lat, lon, ref_wind_speed)
     
-#     times = wr_data_df['time'].unique()
-#     interp_wspd = []
-#     interp_wdir = []
+    # Find the maximum ref_wind_speed in the interpolated values
+    max_ref_wind_speed = max(interpolated_values, key=lambda x: x[2])  # x[2] is the ref_wind_speed value
+    # Extract the latitude, longitude, and the max ref_wind_speed
+    max_lat, max_lon, max_ws = max_ref_wind_speed
 
-#     for t in times:
-#         df_t = wr_data_df[wr_data_df['time'] == t]
-        
-#         points = df_t[['latitude', 'longitude']].values
-#         wspd = df_t['ref_wind_speed'].values
-
-#         # Convert wind direction to u, v
-#         dir_rad = np.radians(df_t['ref_wind_direction'].values)
-#         u10 = -wspd * np.sin(dir_rad)
-#         v10 = -wspd * np.cos(dir_rad)
-
-#         # Interpolate speeds
-#         interp_wspd.append(griddata(points, wspd, target_coord, method='linear'))
-
-#         # Interpolate u and v components, then convert back to direction
-#         iu10 = griddata(points, u10, target_coord, method='linear')
-#         iv10 = griddata(points, v10, target_coord, method='linear')
-#         iwdir = (np.degrees(np.arctan2(-iu10, -iv10)) + 360) % 360
-#         interp_wdir.append(iwdir)
-
-#     df = {'time': times,
-#     'wspd': np.array(interp_wspd),
-#     'wdir': np.array(interp_wdir),}
-#     return len(df)
-
-# def interpolate_4_loc(wr_data_df, coord):
-#     '''Takes windspeeds and winddirection from the four location (including the coordinates),
-#     and then interpolates in regards to a specific location'''
-#     points = wr_data_df[['latitude', 'longitude']].head(20).values
-#     #pointsx = wr_data_df['latitude'].head(50).values
-#     #pointsy = wr_data_df['longitude'].head(50).values
-#     values = wr_data_df['ref_wind_speed'].head(50).values
-
-#     interpolated_speed = []
-#     for i in (values):
-#         result = griddata(points, values, coord, method='nearest')
-#         interpolated_speed.append(result)
+    # Print the corresponding latitude, longitude, and the max ref_wind_speed
+    print(f"Maximum Wind Speed: {max_ws} m/s")
+    print(f"At Latitude: {max_lat}, Longitude: {max_lon}")
     
-#     return values
-    #return np.array(interpolated_speed)
+    return max_ref_wind_speed
+
 
 def interpolate_wind_direction(wr_data_df, target_coord):
     """
@@ -275,7 +268,7 @@ def interpolate_wind_direction(wr_data_df, target_coord):
 
     return result_df.sort_values('time')
   
-  def compute_alpha_from_two_heights(df):
+def compute_alpha_from_two_heights(df):
     """
     Compute wind shear exponent alpha based on ref_wind_speed at 10m and 100m.
     Assumes df contains rows for both heights for each (time, lat, lon).

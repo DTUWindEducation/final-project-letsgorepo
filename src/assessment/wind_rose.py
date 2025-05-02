@@ -40,7 +40,6 @@ def plot_wind_rose(ws_csv, wd_csv):
     output_path = output_dir / "wind_rose_10m.png"
     plt.gcf().savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"✅ 10m plot saved to: {output_path}")
 
     #______100m_____
     plt.figure(figsize=(10, 8)).clear()  # Force fresh figure
@@ -60,4 +59,4 @@ def plot_wind_rose(ws_csv, wd_csv):
     output_path = output_dir / "wind_rose_100m.png"
     plt.gcf().savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"✅ 100m plot saved to: {output_path}")
+   
