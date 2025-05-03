@@ -22,8 +22,8 @@ project_root = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.insert(0, project_root)
 
 from assessment.read_input import read_resource_calc_wref
-data_wind_df, df_data = read_resource_calc_wref('1997-1999.nc')  #OBS this is for 100m
-print(f"ref wind speed for 2 heights: \n", data_wind_df)
+data_ref_wind_df, data_nc_wind_df = read_resource_calc_wref('1997-1999.nc')  #OBS this is for 100m
+print(f"ref wind speed for 2 heights: \n", data_ref_wind_df)
 
 from assessment.read_input import read_turbine
 data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
@@ -31,14 +31,14 @@ data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
 coord = (55.75,7.8) #define specific coordinates to interpolate from
 #____KEEP!!!____
 # from assessment.interpolate_4_loc import interpolate_speed, interpolate_wind_direction
-# val_speed = interpolate_speed(data_wind_df, coord)
+# val_speed = interpolate_speed(data_ref_wind_df, coord)
 # print(val_speed)
-# val_dir = interpolate_wind_direction(df_data, coord)
+# val_dir = interpolate_wind_direction(data_nc_wind_df, coord)
 # print(val_dir)
 from assessment.interpolate_4_loc import interpolate_max_ws_100
 height = 100 #or 10
-result = interpolate_max_ws_100(data_wind_df, height)
-print(result)
+result = interpolate_max_ws_100(data_ref_wind_df, height)
+#print(result)
 #____KEEP!!!____
 #____DELETE!!!____
 THIS_FILE = Path('main.py').parent  # current script directory or use __file__
@@ -51,15 +51,16 @@ val = df_wind_speed.iloc[0,1]
 #print(val)
 #____DELETE!!!____
 
-from assessment.interpolate_4_loc import compute_wind_speed_at_height
-from assessment.interpolate_4_loc import compute_alpha_from_two_heights
-df_alpha = compute_alpha_from_two_heights(data_wind_df)
-target_height = 80
-ws_at_80m = compute_wind_speed_at_height(
-    data_wind_df,
-    target_height,
-    ref_height=100,
-    df_alpha = df_alpha
+# Note: in this code, something prints out. maybe have only print out statements here in main???
+# from assessment.interpolate_4_loc import compute_wind_speed_at_height
+# from assessment.interpolate_4_loc import compute_alpha_from_two_heights
+# df_alpha = compute_alpha_from_two_heights(data_ref_wind_df)
+# target_height = 80
+# ws_at_80m = compute_wind_speed_at_height(
+#     data_ref_wind_df,
+#     target_height,
+#     ref_height=100,
+#     df_alpha = df_alpha
 )
 #print(f"wind speed at {target_height} [m]: \n", ws_at_80m)
 # print(df_alpha)
@@ -67,6 +68,13 @@ ws_at_80m = compute_wind_speed_at_height(
 from assessment.wind_rose import plot_wind_rose
 windrose = plot_wind_rose(df_wind_speed, df_wind_direction)
 
+from assessment.aep import calc_aep
+turbine = data_turb15_df            # or data_turb15_df
+wind = data_ref_wind_df             # from reading the data
+time_start = '1997-01-01'           # or from 1997-01-01 to 2008-12-31
+time_end = '1997-12-31'
+AEP_for_turb = calc_aep(turbine, data_ref_wind_df, time_start, time_end, height)
+print(AEP_for_turb)
 #_____End timer____
 end_time = time.time()                                      # End timer
 running_time = end_time - start_time                        # Difference=time
