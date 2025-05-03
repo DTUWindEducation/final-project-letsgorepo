@@ -57,7 +57,33 @@ open_nc_files.py
 
 ## Classes description*
 
-[ADD TEXT HERE!]
+### `WindDataLoader` Class
+The `WindDataLoader` class is designed to load wind speed and direction data from NetCDF files and compute reference wind values at multiple heights (10m and 100m). It provides a structured way to extract, process, and format wind data into a pandas DataFrame for further analysis.
+
+---
+
+### Key Features
+
+- **Data Loading**: Opens and loads NetCDF files using `xarray`.
+- **Wind Speed and Direction Calculation**: Computes wind speed and meteorological wind direction at 10m and 100m based on `u`/`v` components.
+- **Data Conversion**: Converts the dataset into a long-form pandas DataFrame, ready for analysis or visualization.
+
+---
+
+### Methods
+
+#### `__init__(self, file_path)`
+Initializes the loader with the path to a NetCDF file.
+
+#### `load_data(self)`
+Loads the NetCDF dataset using `xarray` and returns it.
+
+#### `compute_and_format_dataframe(self)`
+Computes wind speed and direction at 10m and 100m, and returns a structured long-form DataFrame with relevant fields including:
+- `ref_wind_speed`
+- `ref_wind_direction`
+- `latitude`, `longitude`
+- `time`, `height`
 
 ## Git flow/ collaboration methodology*
 
