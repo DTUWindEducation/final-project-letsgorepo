@@ -34,3 +34,13 @@ def test_wind_speed_at_z():
     expected_ws_80 = 5.623321 * (80 / 100) ** expected_alpha
 
     assert np.isclose(df_wind_at_z['Windspeed at z [m/s]'].iloc[0], expected_ws_80, atol=0.5)
+
+def test_alpha_mismatched_heights_raises():
+    data = [
+        {"time": "1997-01-01T00:00", "latitude": 55.75, "longitude": 7.75, "height": 10, "ref_wind_speed": 5.0},
+        # missing 100m point
+    ]
+    df = pd.DataFrame(data)
+    
+    with pytest.raises(AssertionError, match="Mismatch in 10m and 100m rows"):
+        compute_alpha_from_two_heights(df)

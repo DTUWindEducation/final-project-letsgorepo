@@ -37,14 +37,14 @@ val_dir = interpolate_wind_direction(df_data, coord)
 print(val_dir)
 #____KEEP!!!____
 #____DELETE!!!____
-THIS_FILE = Path('main.py').parent  # current script directory or use __file__
-outputs_dir = THIS_FILE.parent / 'outputs'  # inputs folder is at the same level as src
-val_dir = outputs_dir / 'winddirection_interpolated_results.csv'
-val_sp = outputs_dir / 'windspeed_interpolated_results.csv'
-df_wind_direction = pd.read_csv(val_dir)
-df_wind_speed = pd.read_csv(val_sp)
-val = df_wind_speed.iloc[0,1]
-print(val)
+# THIS_FILE = Path('main.py').parent  # current script directory or use __file__
+# outputs_dir = THIS_FILE.parent / 'outputs'  # inputs folder is at the same level as src
+# val_dir = outputs_dir / 'winddirection_interpolated_results.csv'
+# val_sp = outputs_dir / 'windspeed_interpolated_results.csv'
+# df_wind_direction = pd.read_csv(val_dir)
+# df_wind_speed = pd.read_csv(val_sp)
+# val = df_wind_speed.iloc[0,1]
+# print(val)
 #____DELETE!!!____
 
 from assessment.interpolate_4_loc import compute_wind_speed_at_height
