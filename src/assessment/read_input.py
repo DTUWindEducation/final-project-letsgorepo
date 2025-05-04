@@ -6,6 +6,7 @@ import glob
 
 
 def read_resource_calc_wref(file):  # '1997-1999.nc'
+<<<<<<< Updated upstream
     """
     Reads .nc wind data and calculates reference wind speed and direction
     at 10m and 100m heights for four predefined locations:
@@ -16,6 +17,13 @@ def read_resource_calc_wref(file):  # '1997-1999.nc'
 
     Returns both a height-stacked long-format DataFrame and the raw DataFrame.
     """
+=======
+    '''Calculate the reference wind speed and direction for the four locations
+    loc1: 55.5°N, 7.75°E
+    loc2: 55.5°N, 8°E
+    loc3: 55.75°N, 7.75°E
+    loc4: 55.75°N, 8°E'''
+>>>>>>> Stashed changes
     # We go outside the src folder to find the inputs folder
     THIS_FILE = Path(file).parent
     inputs_dir = THIS_FILE.parent / 'inputs'
@@ -37,14 +45,24 @@ def read_resource_calc_wref(file):  # '1997-1999.nc'
         # Calculate reference wind speed at 10m and 100m height
         df_data['wind_speed_10'] = np.sqrt(df_data['u10']**2 +
                                            df_data['v10']**2)
+<<<<<<< Updated upstream
         df_data['wind_speed_100'] = np.sqrt(df_data['u100']**2 +
                                             df_data['v100']**2)
+=======
+        df_data['wind_speed_100'] = np.sqrt(df_data['u100']**2
+                                            + df_data['v100']**2)
+>>>>>>> Stashed changes
         # Calculate reference wind direction at 10m and 100m height
         df_data['wind_direction_10'] = (270 - np.arctan2(df_data['v10'],
                                         df_data['u10']) * 180 / np.pi) % 360
         df_data['wind_direction_100'] = (270 - np.arctan2(df_data['v100'],
+<<<<<<< Updated upstream
                                          df_data['u100']) * 180 / np.pi) % 360
 
+=======
+                                        df_data['u100']) * 180 / np.pi) % 360
+        
+>>>>>>> Stashed changes
         # Reconstruct the data fram and rename
         df_long = pd.concat(
             [
@@ -54,17 +72,29 @@ def read_resource_calc_wref(file):  # '1997-1999.nc'
                     'wind_speed_10': 'ref_wind_speed',
                     'wind_direction_10': 'ref_wind_direction',
                     'valid_time': 'time'
+<<<<<<< Updated upstream
                     }).assign(height=10),
+=======
+                }).assign(height=10),
+>>>>>>> Stashed changes
                 df_data[['wind_speed_100', 'wind_direction_100',
                          'latitude', 'longitude', 'valid_time']]
                 .rename(columns={
                     'wind_speed_100': 'ref_wind_speed',
                     'wind_direction_100': 'ref_wind_direction',
                     'valid_time': 'time'
+<<<<<<< Updated upstream
                     }).assign(height=100)
             ], axis=0, ignore_index=True)  # stack vertically
 
     return df_long, df_data
+
+=======
+                }).assign(height=100)
+            ], axis=0, ignore_index=True)  # axis=0 means stack vertically
+
+        return df_long, df_data
+>>>>>>> Stashed changes
 
 
 def read_turbine(file):

@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.optimize import curve_fit
+<<<<<<< Updated upstream
 import matplotlib.pyplot as plt         # For plot
 from pathlib import Path                # For identifying path
 
@@ -22,11 +23,19 @@ def weibull_model(x, c, k):  # x-Wind speed.c-Scale.k-Shape.
     array-like or float
         Probability density values corresponding to input wind speeds.
     """
+=======
+import matplotlib.pyplot as plt
+from pathlib import Path            # For identifying path of file
+
+
+def weibull_model(x, c, k):  # x-Wind speed values.c-Scale.k-Shape.
+>>>>>>> Stashed changes
     return (k / c) * (x / c)**(k - 1) * np.exp(-(x / c)**k)
 
 
 def process_weibull(data_wind_df, coord, height, power_range, wind_speed_min,
                     wind_speed_max):
+<<<<<<< Updated upstream
 
     """
     Fit a Weibull distribution to wind speed data and return the PDF.
@@ -60,6 +69,8 @@ def process_weibull(data_wind_df, coord, height, power_range, wind_speed_min,
     Saves a histogram of wind speed data with the fitted Weibull distribution
     as "Weibull distribution.png" in the `outputs` directory.
     """
+=======
+>>>>>>> Stashed changes
     # Interpolate wind speeds using interpolate_4_loc results
     interpolated_df = data_wind_df
 
@@ -79,8 +90,13 @@ def process_weibull(data_wind_df, coord, height, power_range, wind_speed_min,
     bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
 
     # Fit Weibull distribution using curve_fit
+<<<<<<< Updated upstream
     params_opt, params_cov = curve_fit(weibull_model, bin_centers,
                                        hist, p0=[5, 2])  # Initial guess [c, k]
+=======
+    params_opt, params_cov = curve_fit(weibull_model, bin_centers, hist,
+                                       p0=[5, 2])  # Initial guess for [c, k]
+>>>>>>> Stashed changes
     c_opt, k_opt = params_opt  # Scale and shape parameters
 
     # Plot histogram and fitted Weibull distribution

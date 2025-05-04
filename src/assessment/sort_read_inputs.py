@@ -5,6 +5,7 @@ def sort_four_locations(ds_ncfiles, lat_coord, lon_coord):
     loc3: 55.75°N, 7.75°E
     loc4: 55.75°N, 8°E'''
 
+<<<<<<< Updated upstream
     # Sort dataset for .nc files into the four locations. Coordinates for
     # locations specefied as arrays.
     # Find the nearest number to locations.
@@ -17,6 +18,11 @@ def sort_four_locations(ds_ncfiles, lat_coord, lon_coord):
     #                       lon_coord[0]}, method="nearest")
     # loc3 = ds_ncfiles.sel({'longitude': lat_coord[1], 'latitude':
     #                       lon_coord[1]}, method="nearest")
+=======
+    loc0 = ds_ncfiles.sel({'longitude': lat_coord[0],
+                           'latitude': lon_coord[0]},
+                          method="nearest")
+>>>>>>> Stashed changes
 
     # Convert the dataset to a DataFrame
     df_loc0 = loc0.to_dataframe().reset_index()

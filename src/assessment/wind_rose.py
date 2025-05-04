@@ -38,7 +38,10 @@ def plot_wind_rose(ws_csv, wd_csv):
     plt.gcf().savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
 
+<<<<<<< Updated upstream
     # ______100m_____
+=======
+>>>>>>> Stashed changes
     plt.figure(figsize=(10, 8)).clear()  # Force fresh figure
     ax2 = WindroseAxes.from_ax()  # Create new axes
     ax2.bar(wd_100, ws_100, normed=True)

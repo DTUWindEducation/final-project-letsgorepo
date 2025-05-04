@@ -8,6 +8,7 @@ import xarray as xr
 from pathlib import Path
 import glob
 
+<<<<<<< Updated upstream
 file = '1997-1999.nc'  # file to open
 
 # We go outside the src folder to find the inputs folder
@@ -16,10 +17,24 @@ inputs_dir = THIS_FILE.parent / 'inputs'
 
 # read the .nc files
 nc_files = glob.glob(str(inputs_dir / '*.nc'))  # search for .nc files
+=======
+file = '1997-1999.nc'
+
+# We go outside the src folder to find the inputs folder
+THIS_FILE = Path(file).parent  # current script directory or use __file__
+inputs_dir = THIS_FILE.parent / 'inputs'
+
+# read the .nc files
+nc_files = glob.glob(str(inputs_dir / '*.nc'))
+>>>>>>> Stashed changes
 
 # length = len(nc_files)  # Use len() to get the number of files
 
 for nc_file in nc_files:
+<<<<<<< Updated upstream
+=======
+    # Open the .nc file using xarray
+>>>>>>> Stashed changes
     ds = xr.open_dataset(nc_file, engine="netcdf4")
 
     # Convert the dataset to a DataFrame

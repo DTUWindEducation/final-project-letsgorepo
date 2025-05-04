@@ -85,7 +85,6 @@ AEP_for_turb = calc_aep(filtered, pdf_range_period)
 print(f"Annual Energy production from {time_start} to {time_end} is {AEP_for_turb} MWh")
 result = calc_aep_per_speed(filtered, pdf_range_period, coord)
 
-
 #_____End timer____
 end_time = time.time()                                      # End timer
 running_time = end_time - start_time                        # Difference=time

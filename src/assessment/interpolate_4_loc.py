@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 # ----Import packages------------
+=======
+# ----Import packages
+>>>>>>> Stashed changes
 import numpy as np
 from pathlib import Path            # For identifying path of file
 from scipy.interpolate import LinearNDInterpolator  # For interpolation
@@ -94,12 +98,14 @@ def plot_interpolation(int_ws, int_wd, target_coord):
     return fig
 
 
+
 def interpolate_max_ws_100(wr_data_df, height):
     '''Calculate the location inside the box, with maximum windspeed using
     interpolation
 
     Args:
         wr_data_df (pd.DataFrame): A DataFrame containing wind resource data
+<<<<<<< Updated upstream
         with columns including 'latitude', 'longitude', 'height', and
         'ref_wind_speed'.
         height (int or float): The hub height at which to filter wind speed
@@ -109,6 +115,17 @@ def interpolate_max_ws_100(wr_data_df, height):
         tuple: A tuple (latitude, longitude, wind_speed) corresponding to the
         location within the defined grid that has the maximum interpolated
         wind speed.'''
+=======
+        with columns including 'latitude', 'longitude', 'height',
+        and 'ref_wind_speed'.
+        height (int or float): The hub height at which to filter
+        wind speed data for interpolation (e.g., 100).
+
+    Returns:
+        tuple: A tuple (latitude, longitude, wind_speed) corresponding
+        to the location within the defined grid that has the maximum
+        interpolated wind speed.'''
+>>>>>>> Stashed changes
 
     lat_range = np.arange(55.5, 55.75, 0.01)
     lon_range = np.arange(7.75, 8, 0.01)
@@ -127,9 +144,13 @@ def interpolate_max_ws_100(wr_data_df, height):
         ['latitude', 'longitude', 'ref_wind_speed']
         ].drop_duplicates(subset=['latitude', 'longitude'])
 
+<<<<<<< Updated upstream
     points = first_4_values[
         ['latitude', 'longitude']
         ].to_numpy()  # Lat, Lon pairs
+=======
+    points = first_4_values[['latitude', 'longitude']].to_numpy()
+>>>>>>> Stashed changes
     ref_wind_speed = first_4_values['ref_wind_speed'].to_numpy()
 
     # Build interpolator
@@ -138,11 +159,18 @@ def interpolate_max_ws_100(wr_data_df, height):
     # Create a new list with interpolated values for each grid point
     interpolated_values = []
     for i in grid_points:
+<<<<<<< Updated upstream
         interpolated_value = interpolator(np.array(i))  # Interpolated ws
         interpolated_values.append((i[0], i[1], interpolated_value))
 
     # Find the maximum ref_wind_speed in the interpolated values
         # x[2] is the ref_wind_speed value
+=======
+        interpolated_value = interpolator(np.array(i))
+        interpolated_values.append((i[0], i[1], interpolated_value))
+
+    # Find the maximum ref_wind_speed in the interpolated values
+>>>>>>> Stashed changes
     max_ref_wind_speed = max(interpolated_values, key=lambda x: x[2])
     # Extract the latitude, longitude, and the max ref_wind_speed
     max_lat, max_lon, max_ws = max_ref_wind_speed
@@ -179,7 +207,11 @@ def compute_wind_speed_at_height(data_wind_df, target_height, ref_height,
 
     Parameters:
     - data_wind_df: pd.DataFrame with columns ['latitude', 'longitude', 'time',
+<<<<<<< Updated upstream
     'height', 'ref_wind_speed']
+=======
+    height', 'ref_wind_speed']
+>>>>>>> Stashed changes
     - target_height: float, the desired height z (e.g., 80)
     - ref_height: the reference height (either 10 or 100)
     - alpha: float, wind shear exponent (computed separately)
@@ -193,9 +225,14 @@ def compute_wind_speed_at_height(data_wind_df, target_height, ref_height,
     assert ref_height in [10, 100], "ref_height must be 10 or 100"
 
     # Filter data for the chosen reference height
+<<<<<<< Updated upstream
     df_ref = data_wind_df[
         data_wind_df['height'] == ref_height
         ].copy().reset_index(drop=True)
+=======
+    df_ref = data_wind_df[data_wind_df['height'] ==
+                          ref_height].copy().reset_index(drop=True)
+>>>>>>> Stashed changes
 
     # Merge the df_alpha with the df_ref based on time, latitude, and longitude
     df_ref = df_ref.merge(df_alpha[['time', 'latitude', 'longitude', 'alpha']],
@@ -203,7 +240,11 @@ def compute_wind_speed_at_height(data_wind_df, target_height, ref_height,
 
     # Calculate wind speed at target height using power law formula
     ws_ref = df_ref['ref_wind_speed'].values
+<<<<<<< Updated upstream
     alpha_values = df_ref['alpha'].values  # Alpha values for each record
+=======
+    alpha_values = df_ref['alpha'].values  # alpha values for each record
+>>>>>>> Stashed changes
 
     # Apply the power law formula for each record using its alpha value
     ws_z = ws_ref * (target_height / ref_height) ** alpha_values
@@ -218,7 +259,10 @@ def compute_wind_speed_at_height(data_wind_df, target_height, ref_height,
                         'alpha', 'Windspeed at z [m/s]', 'ref_height',
                         'z [m]']]
 
+<<<<<<< Updated upstream
     # save result
+=======
+>>>>>>> Stashed changes
     # --- Define paths ---
     current_dir = Path(__file__).parent.resolve()
     output_dir = current_dir.parent.parent / "outputs"
@@ -227,7 +271,11 @@ def compute_wind_speed_at_height(data_wind_df, target_height, ref_height,
     output_dir.mkdir(exist_ok=True)
 
     # --- Save `result_df` to CSV in the output folder ---
+<<<<<<< Updated upstream
     output_file = output_dir / "wind_speed_at_target_height.csv"  # Filename
+=======
+    output_file = output_dir / "wind_speed_at_target_height.csv"
+>>>>>>> Stashed changes
     result_df.to_csv(output_file, index=False)  # Save as CSV (no index)
 
     return result_df
