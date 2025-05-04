@@ -1,12 +1,9 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/zjSXGKeR)
 
-[! '*' means it's a mandatory rubric for pass]
 # Notes for the readme
-OBS!!!!! the provided input .nc files have latitude and longitude the other way around
+
 The .nc files are wind ressource
 The .csv files are specific wind turbines
-
-# Questions for teachers ?????
 
 # Our Great Package
 
@@ -17,6 +14,7 @@ The core functionality of this project is organized in the `assessment` Python p
 This package provides a set of tools for wind data reading, analysis, and visualization — specifically designed for wind energy applications such as wind resource assessment and wind farm planning.
 
 ### Modules included
+
 `__init__`
 Is the defalt file that the package should have.
 
@@ -46,50 +44,39 @@ In this module we have three functions, which are
 ---
 
 `AEP`: Compute AEP of a specifed wind turbine (NREL 5 MW or NREL 15 MW) at a given location inside the box for a given year in the period we have provided the wind data
-#### Two 'unnecessary files'
-`open_nc_files`: This is only for opening the .nc files and see what's inside, and for checking if our function open the file correctly in order.
-`sort_read_inputs`: This is an 'extra function' to sort the data according to for different coordinate. It will be used if we need to calculate something for a single location of those four.
 
+#### Extra
 
-
-## Quick-start guide (Installation instructions*)
-main.py
-    Explenation
-________________________________________________________________________________
-read_input.py
-    ----------------------------------------------------------------------------
-    read_resource_calc_wref
-        INPUT
-        File to search for when looking for the path to the .nc files
-
-        OUTPUT
-    -----------------------------------------------------------------------------
-    read_turbine
-        INPUT
-        OUTPUT
-________________________________________________________________________________
-sort_read_inputs.py
-    ----------------------------------------------------------------------------
-    fort_four_locations:
-        INPUT
-        The read values from read_values.py
-        
-        OUTPUT
-        1st column    2nd column      3rd column      4th column      5th column
-        Latitude      Longitude       Height          Windspeed       Wind direction
-_________________________________________________________________________________
-interpolate_4_loc.py
-
-
-EXTRA
-open_nc_files.py
+`open_nc_files`:
     Opens the .nc files since these files cannot be opened. It was used to know what columns to consider when calculating. 
-interpolate_4_loc.py > interpolate_max_ws_100()
+`interpolate_4_loc` > `interpolate_max_ws_100()`:
     Interpolates the first wind speed value at 100m, but for multiple locations, defined as an array whith latitude and longitude between 55.5 - 55.75 and 7.75 - 8.
     The location is 0.01 specific. 
     Returns the location and the max wind speed.
-aep.pu > plot_aep()
+`aep.pu` > `plot_aep()`:
     Calculates the AEP for the whole time period, with an interval of 1 month.
+
+## Quick-start guide (Installation instructions*)
+
+Follow the instructions below to install and run the project
+
+### Prerequisites
+
+Before installing, ensure you have the following installed.
+- Python 3.11 or higher
+In Anaconda Prompt: (Remember to install in you environment)
+- pip install xarray
+- pip install scipy
+- pip install windrose
+
+### Clone the repository
+
+git clone https://github.com/DTUWindEducation/final-project-letsgorepo.git
+
+### Run the project
+
+python `example/main.py`
+
 ## Code Architecture (include diagram)*
 
 ![Program_architecture](Program_architecture.jpeg)
@@ -101,12 +88,15 @@ aep.pu > plot_aep()
 ## Classes description*
 
 ### `WindDataLoader` Class
+
 The `WindDataLoader` class is designed to load wind speed and direction data from NetCDF files and compute reference wind values at multiple heights (10m and 100m). It provides a structured way to extract, process, and format wind data into a pandas DataFrame for further analysis.
+
 ### Key Features
 
 - **Data Loading**: Opens and loads NetCDF files using `xarray`.
 - **Wind Speed and Direction Calculation**: Computes wind speed and meteorological wind direction at 10m and 100m based on `u`/`v` components.
 - **Data Conversion**: Converts the dataset into a long-form pandas DataFrame, ready for analysis or visualization.
+
 ### Methods
 
 #### `__init__(self, file_path)`
@@ -125,17 +115,3 @@ Computes wind speed and direction at 10m and 100m, and returns a structured long
 ## Git flow/ collaboration methodology*
 
 First we cloned our team's repo. Then we worked on our own branches with different tasks, commited to our own branches from time to time. After we made our code work, at the time we need to use others outputs to continue working, we merged into main (with all agreements). Then repeated the process until finished.
-
-## Peer review （can be deleted if we dont want it）
-
-[ADD TEXT HERE!]
-
-## Import in Anaconda prompt
-conda install anaconda::xarray
-
-pip install scipy
-
-windrose:
-- Open Anaconda prompt ans go to folder "cd Git 46120\final-project-letsgorepo" or whatever path you have.
-- pip install windrose
-- Remember to install in you environment
