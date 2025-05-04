@@ -4,8 +4,8 @@ from pathlib import Path            # For identifying path of file
 import glob                         #
 import sys                          #
 import os                           #
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),'..','src')))
 import pandas as pd
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),'..','src')))
 
 #_____Start timer for running time of code_____
 start_time = time.time()            # Start timer
@@ -22,29 +22,68 @@ project_root = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.insert(0, project_root)
 
 from assessment.read_input import read_resource_calc_wref
-data_wind_df, df_data = read_resource_calc_wref('1997-1999.nc')  #OBS this is for 100m
-print(data_wind_df)
+data_ref_wind_df, data_nc_wind_df = read_resource_calc_wref('1997-1999.nc')  #OBS this is for 100m
+print(f"ref wind speed for 2 heights: \n", data_ref_wind_df)
 
 from assessment.read_input import read_turbine
 data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
 
-coord = (55.75,7.8) #define specific coordinates to interpolate from
-from assessment.interpolate_4_loc import interpolate_speed, interpolate_wind_direction
-val_speed = interpolate_speed(data_wind_df, coord)
+coord = (7.8, 55.74) #define specific coordinates to interpolate from
+#____KEEP!!!____
+from assessment.interpolate_4_loc import interpolate_speed, interpolate_direction
+val_speed = interpolate_speed(data_ref_wind_df, coord)
 print(val_speed)
-val_dir = interpolate_wind_direction(df_data, coord)
+val_dir = interpolate_direction(data_ref_wind_df, coord)
 print(val_dir)
+#from assessment.interpolate_4_loc import interpolate_max_ws_100
+#height = 100 #or 10
+#result = interpolate_max_ws_100(data_ref_wind_df, height)
+#print(result)
+#____KEEP!!!____
 
-from assessment.Weibull import process_weibull
-c_10m, k_10m = process_weibull(data_wind_df, coord, 10)
-print(f"Returned Weibull Parameters for 10m: Scale (c) = {c_10m:.2f}, Shape (k) = {k_10m:.2f}")
-c_100m, k_100m = process_weibull(data_wind_df, coord, 100)
-print(f"Returned Weibull Parameters for 100m: Scale (c) = {c_100m:.2f}, Shape (k) = {k_100m:.2f}")
+#____DELETE!!!____
+THIS_FILE = Path('main.py').parent  # current script directory or use __file__
+outputs_dir = THIS_FILE.parent / 'outputs'  # inputs folder is at the same level as src
+val_dir = outputs_dir / 'winddirection_interpolated_results.csv'
+val_sp = outputs_dir / 'windspeed_interpolated_results.csv'
+df_wind_direction = pd.read_csv(val_dir)
+df_wind_speed = pd.read_csv(val_sp)
+val = df_wind_speed.iloc[0,1]
+#print(val)
+#____DELETE!!!____
 
+# Note: in this code, something prints out. maybe have only print out statements here in main???
+# from assessment.interpolate_4_loc import compute_wind_speed_at_height
+# from assessment.interpolate_4_loc import compute_alpha_from_two_heights
+# df_alpha = compute_alpha_from_two_heights(data_ref_wind_df)
+# target_height = 80
+# ws_at_80m = compute_wind_speed_at_height(
+#     data_ref_wind_df,
+#     target_height,
+#     ref_height=100,
+#     df_alpha = df_alpha
+# )
+# print(f"wind speed at {target_height} [m]: \n", ws_at_80m)
+#print(df_alpha)
+
+from assessment.weibull import process_weibull
+c_10m, k_10m, pdf_range_10 = process_weibull(df_wind_speed, coord, 10)
+# print(f"Returned Weibull Parameters for 10m: Scale (c) = {c_10m:.2f}, Shape (k) = {k_10m:.2f}")
+c_100m, k_100m, pdf_range_100 = process_weibull(df_wind_speed, coord, 100)
+#print(f"Returned Weibull Parameters for 100m: Scale (c) = {c_100m:.2f}, Shape (k) = {k_100m:.2f}")
+
+#from assessment.wind_rose import plot_wind_rose
+#windrose = plot_wind_rose(df_wind_speed, df_wind_direction)
+
+from assessment.aep import calc_aep
+turbine = data_turb15_df            # or data_turb15_df
+wind = data_ref_wind_df             # from reading the data
+time_start = '1997-01-01'           # or from 1997-01-01 to 2008-12-31
+time_end = '1997-12-31'
+height = 100
+AEP_for_turb = calc_aep(turbine, data_ref_wind_df, time_start, time_end, height, c_100m, k_100m, pdf_range_100)
+print(AEP_for_turb)
 #_____End timer____
 end_time = time.time()                                      # End timer
 running_time = end_time - start_time                        # Difference=time
 print(f"Running time = {running_time:.2f}s")                # Print timer
-print("DataFrame loaded:", data_wind_df.head())
-print("Interpolated speed:", val_speed)
-print("Interpolated direction:", val_dir)

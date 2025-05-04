@@ -1,7 +1,8 @@
+
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-from assessment.interpolate_4_loc import interpolate_speed
+#from assessment.interpolate_4_loc import interpolate_speed
 
 # Weibull model function
 def weibull_model(x, c, k): #x-Wind speed values.c-Scale parameter.k-Shape parameter.
@@ -9,7 +10,7 @@ def weibull_model(x, c, k): #x-Wind speed values.c-Scale parameter.k-Shape param
 
 def process_weibull(data_wind_df, coord, height):
     # Interpolate wind speeds using interpolate_4_loc results
-    interpolated_df = interpolate_speed(data_wind_df, coord)
+    interpolated_df = data_wind_df
 
     # Select the correct height column
     if height == 10:
@@ -47,7 +48,9 @@ def process_weibull(data_wind_df, coord, height):
     plt.tight_layout()
     plt.show()
 
-    return c_opt, k_opt
+    pdf_range = weibull_model(x, c_opt, k_opt)
+
+    return c_opt, k_opt, pdf_range
 
 # Define path
     current_dir = Path(_file_).parent.resolve()  # Folder where the script is located
