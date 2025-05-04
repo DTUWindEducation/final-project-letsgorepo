@@ -21,16 +21,33 @@ This package provides a set of tools for wind data reading, analysis, and visual
 ### Modules included
 `__init__`
 Is the defalt file that the package should have.
+
+---
+
 `defclasses`
 Here we defined a class for loading wind data. It includes file path, open the files, and turn them into dataframe as a preperation to calculate later.
+
+---
+
 `read_input`
+Functions for reading NetCDF and wind turbine CSV input data, including calculations of the reference wind speed (the combination of 'u' and 'v', and reference wind directions)
+
+---
+
 `interpolate_4_loc`
 In this module we have three functions, which are 
 - `interpolate speed`: Interpolate the wind speed at a specific point inside the boundary box.
 - `interpolate direction`: Interpolate the wind direction at a specific point inside the boundary box.
 - `compute alpha`: Compute each alpha at time series by 10m and 100m.
 - `compute apeed at height`: Calculate wind speed at a specific height using power law, taking 10m or 100m as the reference height.
+
+---
+
 `wind_rose`: Plot wind rose diagram that showes the frequencies of different wind direction at a given location (inside the box) and a given height.
+
+---
+
+`AEP`: Compute AEP of a specifed wind turbine (NREL 5 MW or NREL 15 MW) at a given location inside the box for a given year in the period we have provided the wind data
 #### Two 'unnecessary files'
 `open_nc_files`: This is only for opening the .nc files and see what's inside, and for checking if our function open the file correctly in order.
 `sort_read_inputs`: This is an 'extra function' to sort the data according to for different coordinate. It will be used if we need to calculate something for a single location of those four.
@@ -72,23 +89,21 @@ open_nc_files.py
 
 ## Code Architecture (include diagram)*
 
-[ADD TEXT HERE!]
+![Program architecture](inputs/Program architecture.jpg)
+
+<div style="font-style: italic; text-align: center;">
+
+</div>
 
 ## Classes description*
 
 ### `WindDataLoader` Class
 The `WindDataLoader` class is designed to load wind speed and direction data from NetCDF files and compute reference wind values at multiple heights (10m and 100m). It provides a structured way to extract, process, and format wind data into a pandas DataFrame for further analysis.
-
----
-
 ### Key Features
 
 - **Data Loading**: Opens and loads NetCDF files using `xarray`.
 - **Wind Speed and Direction Calculation**: Computes wind speed and meteorological wind direction at 10m and 100m based on `u`/`v` components.
 - **Data Conversion**: Converts the dataset into a long-form pandas DataFrame, ready for analysis or visualization.
-
----
-
 ### Methods
 
 #### `__init__(self, file_path)`
@@ -106,7 +121,7 @@ Computes wind speed and direction at 10m and 100m, and returns a structured long
 
 ## Git flow/ collaboration methodology*
 
-[ADD TEXT HERE !]
+First we cloned our team's repo. Then we worked on our own branches with different tasks, commited to our own branches from time to time. After we made our code work, at the time we need to use others outputs to continue working, we merged into main (with all agreements). Then repeated the process until finished.
 
 ## Peer review （can be deleted if we dont want it）
 
