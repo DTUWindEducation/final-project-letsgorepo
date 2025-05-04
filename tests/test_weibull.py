@@ -7,7 +7,7 @@ from pathlib import Path
 # Add path to src folder
 sys.path.append(str(Path(__file__).parent.parent / "src"))
 
-from assessment.Weibull import process_weibull  # Adjust the path/module if needed
+from assessment.weibull import process_weibull  # Adjust the path/module if needed
 
 
 def test_process_weibull_returns_valid_output_10m():
