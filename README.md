@@ -12,11 +12,30 @@ What is the more clever way to name w, P, cp, thrust, ct? A for-loop? (in read_i
 Is there an extension for opening .nc files?
 # Our Great Package
 
-Team: [ADD TEXT HERE!]
+The core functionality of this project is organized in the `assessment` Python package located in `src/assessment/`.
 
 ## Overview of package*
 
-[ADD TEXT HERE!]
+This package provides a set of tools for wind data reading, analysis, and visualization — specifically designed for wind energy applications such as wind resource assessment and wind farm planning.
+
+### Modules included
+`__init__`
+Is the defalt file that the package should have.
+`defclasses`
+Here we defined a class for loading wind data. It includes file path, open the files, and turn them into dataframe as a preperation to calculate later.
+`read_input`
+`interpolate_4_loc`
+In this module we have three functions, which are 
+- `interpolate speed`: Interpolate the wind speed at a specific point inside the boundary box.
+- `interpolate direction`: Interpolate the wind direction at a specific point inside the boundary box.
+- `compute alpha`: Compute each alpha at time series by 10m and 100m.
+- `compute apeed at height`: Calculate wind speed at a specific height using power law, taking 10m or 100m as the reference height.
+`wind_rose`: Plot wind rose diagram that showes the frequencies of different wind direction at a given location (inside the box) and a given height.
+#### Two 'unnecessary files'
+`open_nc_files`: This is only for opening the .nc files and see what's inside, and for checking if our function open the file correctly in order.
+`sort_read_inputs`: This is an 'extra function' to sort the data according to for different coordinate. It will be used if we need to calculate something for a single location of those four.
+
+
 
 ## Quick-start guide (Installation instructions*)
 main.py
@@ -89,7 +108,7 @@ Computes wind speed and direction at 10m and 100m, and returns a structured long
 
 [ADD TEXT HERE !]
 
-## Peer review
+## Peer review （can be deleted if we dont want it）
 
 [ADD TEXT HERE!]
 
