@@ -15,11 +15,10 @@ EXPECTED_WIND_SPEED_100 = 10.207574  # Modify with your actual expected value fo
 EXPECTED_WIND_DIRECTION_10 = 52.640503  # Modify with your actual expected value for wind direction at 10m
 EXPECTED_WIND_DIRECTION_100 = 198.699524  # Modify with your actual expected value for wind direction at 100m
 
-
 @pytest.fixture
 def sample_data():
-    # Assume there's a sample NetCDF file that can be read (ensure you have a small test file for testing)
-    return read_resource_calc_wref(TEST_FILE_PATH)
+    df, _ = read_resource_calc_wref(TEST_FILE_PATH)
+    return df
 
 def test_first_wind_speed_and_direction(sample_data):
     # Ensure that sample_data is not None
@@ -40,5 +39,3 @@ def test_first_wind_speed_and_direction(sample_data):
     # Verify the wind direction for both heights
     #assert np.isclose(row_10m['ref_wind_direction'], EXPECTED_WIND_DIRECTION_10, atol=1)  # Allow 1 degree tolerance
     #assert np.isclose(row_100m['ref_wind_direction'], EXPECTED_WIND_DIRECTION_100, atol=1)  # Allow 1 degree tolerance
-
-
