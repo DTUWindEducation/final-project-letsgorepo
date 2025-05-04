@@ -70,6 +70,7 @@ Follow the instructions below to install and run the project
 
 Before installing, ensure you have the following installed.
 - Python 3.11 or higher
+
 In Anaconda Prompt: (Remember to install in you environment)
 - pip install xarray
 - pip install scipy
