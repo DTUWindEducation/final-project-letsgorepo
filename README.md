@@ -7,9 +7,7 @@ The .nc files are wind ressource
 The .csv files are specific wind turbines
 
 # Questions for teachers ?????
-What is the more clever way to name w, P, cp, thrust, ct? A for-loop? (in read_input.py file)
 
-Is there an extension for opening .nc files?
 # Our Great Package
 
 Team: [ADD TEXT HERE!]
@@ -50,7 +48,12 @@ interpolate_4_loc.py
 EXTRA
 open_nc_files.py
     Opens the .nc files since these files cannot be opened. It was used to know what columns to consider when calculating. 
-
+interpolate_4_loc.py > interpolate_max_ws_100()
+    Interpolates the first wind speed value at 100m, but for multiple locations, defined as an array whith latitude and longitude between 55.5 - 55.75 and 7.75 - 8.
+    The location is 0.01 specific. 
+    Returns the location and the max wind speed.
+aep.pu > plot_aep()
+    Calculates the AEP for the whole time period, with an interval of 1 month.
 ## Code Architecture (include diagram)*
 
 [ADD TEXT HERE!]
@@ -69,6 +72,8 @@ open_nc_files.py
 
 ## Import in Anaconda prompt
 conda install anaconda::xarray
+
+pip install scipy
 
 windrose:
 - Open Anaconda prompt ans go to folder "cd Git 46120\final-project-letsgorepo" or whatever path you have.

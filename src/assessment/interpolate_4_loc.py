@@ -32,23 +32,6 @@ def interpolate_speed(wr_data_df, target_coord):
 
     # Interpolate for the time series at target location
     ts_interp = interp(target_coord)  # shape: (num_time_steps,)
-    
-    # Optional: plot
-    plt.plot(ts_interp)
-    plt.title(f'Interpolated time series at {target_coord}')
-    plt.xlabel('Time index')
-    plt.ylabel('Wind speed')
-    plt.grid(True)
-    
-    # Define path
-    current_dir = Path(__file__).parent.resolve()  # Folder where the script is located
-    output_dir = current_dir.parent.parent / "outputs"  # Go up 2 levels, then into "output"
-    # --- Create the output folder if it doesn't exist ---
-    output_dir.mkdir(exist_ok=True)  
-    # Save plot
-    output_path = output_dir / "interpolated_wind_speed.png"
-    plt.gcf().savefig(output_path, dpi=300, bbox_inches='tight')
-    plt.close()
 
     return ts_interp
 
@@ -76,159 +59,86 @@ def interpolate_direction(wr_data_df, target_coord):
 
     # Interpolate for the time series at target location
     ts_interp = interp(target_coord)  # shape: (num_time_steps,)
-    
-    # Plot
-    plt.plot(ts_interp)
-    plt.title(f'Interpolated time series at {target_coord}')
-    plt.xlabel('Time index')
-    plt.ylabel('Wind direction')
-    plt.grid(True)
-    
-    # Define path
-    current_dir = Path(__file__).parent.resolve()  # Folder where the script is located
-    output_dir = current_dir.parent.parent / "outputs"  # Go up 2 levels, then into "output"
-    # --- Create the output folder if it doesn't exist ---
-    output_dir.mkdir(exist_ok=True)  
-    # Save plot
-    output_path = output_dir / "interpolated_wind_direction.png"
-    plt.gcf().savefig(output_path, dpi=300, bbox_inches='tight')
-    plt.close()
 
     return ts_interp
 
+def plot_interpolation(int_ws, int_wd, target_coord):
+    # Create figure with two subplots
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+    
+    # Plot wind speed
+    ax1.plot(int_ws, color='tab:blue')
+    ax1.set_ylabel('Wind Speed [m/s]', color='tab:blue')
+    ax1.tick_params(axis='y', labelcolor='tab:blue')
+    ax1.grid(True)
+    ax1.set_title(f'Wind Speed and Direction at {target_coord}')
+    
+    # Plot wind direction
+    ax2.plot(int_wd, color='tab:orange')
+    ax2.set_ylabel('Wind Direction [°]', color='tab:orange')
+    ax2.tick_params(axis='y', labelcolor='tab:orange')
+    ax2.grid(True)
+    ax2.set_xlabel('Time index')
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    # Save plot
+    current_dir = Path(__file__).parent.resolve()
+    output_dir = current_dir.parent.parent / "outputs"
+    output_dir.mkdir(exist_ok=True)
+    output_path = output_dir / "wind_speed_and_direction_plot.png"
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    return fig
 # LOOK we turned the code below to the code above, impressive right? :D
 
-# def interpolate_speed(wr_data_df, target_coord):
-#         """
-#         Interpolates wind speeds at a target location for multiple heights.
-        
-#         Args:
-#             wr_data_df (pd.DataFrame): Input data with columns 'latitude', 'longitude', 'ref_wind_speed', 'time', 'height'.
-#             target_coord (tuple): Target (lat, lon) to interpolate.
-#             heights (list): List of heights (e.g., [10, 100]) to interpolate.
-            
-#         Returns:
-#             pd.DataFrame: Time series with interpolated speeds for each height.
-#         """
-#         heights = [10, 100]
-#         # Ensure column names match
-#         wr_data_df = wr_data_df.rename(columns={
-#             'Latitude': 'latitude',
-#             'Longitude': 'longitude',
-#             'Per wind speed': 'ref_wind_speed'
-#         })
-        
-#         results = []
-        
-#         for height in heights:
-#             # Filter by height and sort by time
-#             df_height = wr_data_df[wr_data_df['height'] == height].copy()
-#             df_height = df_height.sort_values('time')
-            
-#             times = df_height['time'].unique()
-#             interpolated_speeds = []
-            
-#             for t in times:
-#                 df_t = df_height[df_height['time'] == t]
-                
-#                 # Get 2x2 grid (sorted unique lat/lon)
-#                 latitudes = sorted(df_t['latitude'].unique())
-#                 longitudes = sorted(df_t['longitude'].unique())
-                
-#                 if len(latitudes) != 2 or len(longitudes) != 2:
-#                     raise ValueError(f"Expected 2x2 grid, got {len(latitudes)}x{len(longitudes)} at time {t}")
-                
-#                 # Build wind speed grid
-#                 wind_grid = np.empty((2, 2))
-#                 for i, lat in enumerate(latitudes):
-#                     for j, lon in enumerate(longitudes):
-#                         value = df_t[
-#                             (df_t['latitude'] == lat) & 
-#                             (df_t['longitude'] == lon)
-#                         ]['ref_wind_speed'].values
-#                         if len(value) == 1:
-#                             wind_grid[i, j] = value[0]
-#                         else:
-#                             raise ValueError(f"Ambiguous/missing data at lat={lat}, lon={lon}, time={t}")
-                
-#                 # Interpolate
-#                 interp = RegularGridInterpolator((latitudes, longitudes), wind_grid, method='linear')
-#                 interpolated_speeds.append(interp([target_coord])[0])
-            
-#             results.append(pd.DataFrame({
-#                 'time': times,
-#                 f'wind_speed_{height}m': interpolated_speeds
-#             }))
-        
-#         # Merge results for all heights
-#         result_df = results[0]
-#         for df in results[1:]:
-#             result_df = result_df.merge(df, on='time', how='outer')
-        
-#         # save result
-#         # --- Define paths ---
-#         current_dir = Path(__file__).parent.resolve()  # Folder where the script is located
-#         output_dir = current_dir.parent.parent / "outputs"  # Go up 2 levels, then into "output"
+def interpolate_max_ws_100(wr_data_df, height):
+    '''Calculate the location inside the box, with maximum windspeed using interpolation
 
-#         # --- Create the output folder if it doesn't exist ---
-#         output_dir.mkdir(exist_ok=True)  
+    Args:
+        wr_data_df (pd.DataFrame): A DataFrame containing wind resource data with columns including 
+            'latitude', 'longitude', 'height', and 'ref_wind_speed'.
+        height (int or float): The hub height at which to filter wind speed data for interpolation (e.g., 100).
 
-#         # --- Save `result_df` to CSV in the output folder ---
-#         output_file = output_dir / "windspeed_interpolated_results.csv"  # Define filename
-#         result_df.to_csv(output_file, index=False)  # Save as CSV (no index)
-
-#         return result_df.sort_values('time')
-
-
-# def interpolate_max_ws_100(wr_data_df, height):
-#     '''Calculate the location inside the box, with maximum windspeed using interpolation
-
-#     Args:
-#         wr_data_df (pd.DataFrame): A DataFrame containing wind resource data with columns including 
-#             'latitude', 'longitude', 'height', and 'ref_wind_speed'.
-#         height (int or float): The hub height at which to filter wind speed data for interpolation (e.g., 100).
-
-#     Returns:
-#         tuple: A tuple (latitude, longitude, wind_speed) corresponding to the location within the defined 
-#         grid that has the maximum interpolated wind speed.'''
+    Returns:
+        tuple: A tuple (latitude, longitude, wind_speed) corresponding to the location within the defined 
+        grid that has the maximum interpolated wind speed.'''
     
-#     lat_range = np.arange(55.5, 55.75, 0.01)
-#     lon_range = np.arange(7.75, 8, 0.01)
-#     # Create a mesh grid
-#     lat_grid, lon_grid = np.meshgrid(lat_range, lon_range)
+    lat_range = np.arange(55.5, 55.75, 0.01)
+    lon_range = np.arange(7.75, 8, 0.01)
+    # Create a mesh grid
+    lat_grid, lon_grid = np.meshgrid(lat_range, lon_range)
 
-#     # Flatten and combine to (lat, lon) tuples
-#     grid_points = list(zip(lat_grid.ravel(), lon_grid.ravel()))
+    # Flatten and combine to (lat, lon) tuples
+    grid_points = list(zip(lat_grid.ravel(), lon_grid.ravel()))
 
-#     # Filter rows where height is 100
-#     filtered_df = wr_data_df[wr_data_df['height'] == height]
+    # Filter rows where height is 100
+    filtered_df = wr_data_df[wr_data_df['height'] == height]
 
-#     # Select first 4 rows where ref_wind_speed meets the condition
-#     # Ensure you're taking the first 4 unique lat, lon pairs
-#     first_4_values = filtered_df[['latitude', 'longitude', 'ref_wind_speed']].drop_duplicates(subset=['latitude', 'longitude'])
+    # Select first 4 rows where ref_wind_speed meets the condition
+    # Ensure you're taking the first 4 unique lat, lon pairs
+    first_4_values = filtered_df[['latitude', 'longitude', 'ref_wind_speed']].drop_duplicates(subset=['latitude', 'longitude'])
 
-#     points = first_4_values[['latitude', 'longitude']].to_numpy()  # Lat, Lon pairs
-#     ref_wind_speed = first_4_values['ref_wind_speed'].to_numpy()  # Corresponding ref_wind_speed values
+    points = first_4_values[['latitude', 'longitude']].to_numpy()  # Lat, Lon pairs
+    ref_wind_speed = first_4_values['ref_wind_speed'].to_numpy()  # Corresponding ref_wind_speed values
     
-#     # Build interpolator
-#     interpolator = LinearNDInterpolator(points,ref_wind_speed)
+    # Build interpolator
+    interpolator = LinearNDInterpolator(points,ref_wind_speed)
 
-#     #Create a new list with interpolated values for each grid point
-#     interpolated_values = []
-#     for i in grid_points:
-#         interpolated_value = interpolator(np.array(i))  # Get interpolated wind speed for this point
-#         interpolated_values.append((i[0], i[1], interpolated_value))  # Append the (lat, lon, ref_wind_speed)
+    #Create a new list with interpolated values for each grid point
+    interpolated_values = []
+    for i in grid_points:
+        interpolated_value = interpolator(np.array(i))  # Get interpolated wind speed for this point
+        interpolated_values.append((i[0], i[1], interpolated_value))  # Append the (lat, lon, ref_wind_speed)
     
-#     # Find the maximum ref_wind_speed in the interpolated values
-#     max_ref_wind_speed = max(interpolated_values, key=lambda x: x[2])  # x[2] is the ref_wind_speed value
-#     # Extract the latitude, longitude, and the max ref_wind_speed
-#     max_lat, max_lon, max_ws = max_ref_wind_speed
-
-#     # Print the corresponding latitude, longitude, and the max ref_wind_speed
-#     print(f"Maximum Wind Speed: {max_ws} m/s")
-#     print(f"At Latitude: {max_lat}, Longitude: {max_lon}")
+    # Find the maximum ref_wind_speed in the interpolated values
+    max_ref_wind_speed = max(interpolated_values, key=lambda x: x[2])  # x[2] is the ref_wind_speed value
+    # Extract the latitude, longitude, and the max ref_wind_speed
+    max_lat, max_lon, max_ws = max_ref_wind_speed
     
-#     return max_ref_wind_speed
+    return max_lat, max_lon, max_ws
 
 
 # def interpolate_wind_direction(wr_data_df, target_coord):
@@ -390,6 +300,18 @@ def compute_wind_speed_at_height(data_wind_df, target_height, ref_height, df_alp
     df_ref['Windspeed at z [m/s]'] = ws_z
 
     # Keep only relevant columns for the result
-    # result_df = df_ref[['latitude', 'longitude', 'time', 'ref_wind_speed', 'Windspeed at z [m/s]', 'ref_height', 'z [m]']]
+    result_df = df_ref[['latitude', 'longitude', 'time', 'ref_wind_speed', 'alpha','Windspeed at z [m/s]', 'ref_height', 'z [m]']]
+    
+    #save result
+    # --- Define paths ---
+    current_dir = Path(__file__).parent.resolve()  # Folder where the script is located
+    output_dir = current_dir.parent.parent / "outputs"  # Go up 2 levels, then into "output"
 
-    return df_ref
+    # --- Create the output folder if it doesn't exist ---
+    output_dir.mkdir(exist_ok=True)  
+
+    # --- Save `result_df` to CSV in the output folder ---
+    output_file = output_dir / "wind_speed_at_target_height.csv"  # Define filename
+    result_df.to_csv(output_file, index=False)  # Save as CSV (no index)
+    
+    return result_df

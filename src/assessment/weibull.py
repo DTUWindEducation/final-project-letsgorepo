@@ -1,13 +1,14 @@
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
-#from assessment.interpolate_4_loc import interpolate_speed
+from pathlib import Path            # For identifying path of file
+import pandas as pd
 
 # Weibull model function
 def weibull_model(x, c, k): #x-Wind speed values.c-Scale parameter.k-Shape parameter.
     return (k / c) * (x / c)**(k - 1) * np.exp(-(x / c)**k)
 
-def process_weibull(data_wind_df, coord, height):
+def process_weibull(data_wind_df, coord, height, power_range, wind_speed_min, wind_speed_max):
     # Interpolate wind speeds using interpolate_4_loc results
     interpolated_df = data_wind_df
 
@@ -45,24 +46,17 @@ def process_weibull(data_wind_df, coord, height):
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.show()
-
-    pdf_range = weibull_model(x, c_opt, k_opt)
-
-    return c_opt, k_opt, pdf_range
-
-# Define path
-    current_dir = Path(_file_).parent.resolve()  # Folder where the script is located
+    # Define path
+    current_dir = Path(__file__).parent.resolve()  # Folder where the script is located
     output_dir = current_dir.parent.parent / "outputs"  # Go up 2 levels, then into "output"
     # --- Create the output folder if it doesn't exist ---
-    output_dir.mkdir(exist_ok=True)
-
-# Save 10m plot
-    output_path = output_dir / "weibull_10m.png"
+    output_dir.mkdir(exist_ok=True)  
+    # Save plot
+    output_path = output_dir / "Weibull distribution.png"
     plt.gcf().savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
 
-# Save 100m plot
-    output_path = output_dir / "weibull_10m.png"
-    plt.gcf().savefig(output_path, dpi=300, bbox_inches='tight')
-    plt.close()
+    length = np.linspace(wind_speed_min, wind_speed_max, power_range)
+    pdf_range = weibull_model(length, c_opt, k_opt)
+
+    return c_opt, k_opt, pdf_range
