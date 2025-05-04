@@ -28,18 +28,19 @@ print(f"ref wind speed for 2 heights: \n", data_ref_wind_df)
 from assessment.read_input import read_turbine
 data_turb5_df, data_turb15_df = read_turbine('NREL_Reference_5MW_126.csv')
 
-coord = (55.75,7.8) #define specific coordinates to interpolate from
+coord = (7.8, 55.74) #define specific coordinates to interpolate from
 #____KEEP!!!____
-# from assessment.interpolate_4_loc import interpolate_speed, interpolate_wind_direction
-# val_speed = interpolate_speed(data_ref_wind_df, coord)
-# print(val_speed)
-# val_dir = interpolate_wind_direction(data_nc_wind_df, coord)
-# print(val_dir)
-from assessment.interpolate_4_loc import interpolate_max_ws_100
-height = 100 #or 10
-result = interpolate_max_ws_100(data_ref_wind_df, height)
+from assessment.interpolate_4_loc import interpolate_speed, interpolate_direction
+val_speed = interpolate_speed(data_ref_wind_df, coord)
+print(val_speed)
+val_dir = interpolate_direction(data_ref_wind_df, coord)
+print(val_dir)
+#from assessment.interpolate_4_loc import interpolate_max_ws_100
+#height = 100 #or 10
+#result = interpolate_max_ws_100(data_ref_wind_df, height)
 #print(result)
 #____KEEP!!!____
+
 #____DELETE!!!____
 THIS_FILE = Path('main.py').parent  # current script directory or use __file__
 outputs_dir = THIS_FILE.parent / 'outputs'  # inputs folder is at the same level as src
@@ -61,19 +62,26 @@ val = df_wind_speed.iloc[0,1]
 #     target_height,
 #     ref_height=100,
 #     df_alpha = df_alpha
-)
-#print(f"wind speed at {target_height} [m]: \n", ws_at_80m)
-# print(df_alpha)
+# )
+# print(f"wind speed at {target_height} [m]: \n", ws_at_80m)
+#print(df_alpha)
 
-from assessment.wind_rose import plot_wind_rose
-windrose = plot_wind_rose(df_wind_speed, df_wind_direction)
+from assessment.weibull import process_weibull
+c_10m, k_10m, pdf_range_10 = process_weibull(df_wind_speed, coord, 10)
+# print(f"Returned Weibull Parameters for 10m: Scale (c) = {c_10m:.2f}, Shape (k) = {k_10m:.2f}")
+c_100m, k_100m, pdf_range_100 = process_weibull(df_wind_speed, coord, 100)
+#print(f"Returned Weibull Parameters for 100m: Scale (c) = {c_100m:.2f}, Shape (k) = {k_100m:.2f}")
+
+#from assessment.wind_rose import plot_wind_rose
+#windrose = plot_wind_rose(df_wind_speed, df_wind_direction)
 
 from assessment.aep import calc_aep
 turbine = data_turb15_df            # or data_turb15_df
 wind = data_ref_wind_df             # from reading the data
 time_start = '1997-01-01'           # or from 1997-01-01 to 2008-12-31
 time_end = '1997-12-31'
-AEP_for_turb = calc_aep(turbine, data_ref_wind_df, time_start, time_end, height)
+height = 100
+AEP_for_turb = calc_aep(turbine, data_ref_wind_df, time_start, time_end, height, c_100m, k_100m, pdf_range_100)
 print(AEP_for_turb)
 #_____End timer____
 end_time = time.time()                                      # End timer

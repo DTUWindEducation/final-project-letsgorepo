@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 #from scipy.stats import weibull_min
 
-def calc_aep(turb, wind, t_start, t_end, height):
+def calc_aep(turb, wind, t_start, t_end, height, c_100, k_100, pdf):
     """
     Calculate Annual Energy Production (AEP) from wind and turbine data.
     
@@ -24,11 +24,7 @@ def calc_aep(turb, wind, t_start, t_end, height):
     
     # Construct arrays
     result_ws = ws_height_time['ref_wind_speed'].to_numpy()
-    #result_time = ws_height_time['time'].to_numpy()
-
-    # Fit Weibull distribution to the wind speed data
-    #shape, loc, scale = weibull_min.fit(wind_speeds, floc=0)
-
+    result_time = ws_height_time['time'].to_numpy()
 
     # Get power from turb
     turb_wind = turb['Wind Speed [m/s]'].to_numpy()
@@ -49,7 +45,7 @@ def calc_aep(turb, wind, t_start, t_end, height):
     # Numerical integration
     η = 1.0  # Turbine availability (efficiency factor)
     hours_per_year = 8760
-    integrand = power_range #* pdf_range (weibull input)
+    integrand = power_range  * pdf
     aep = η * hours_per_year * np.trapz(integrand, wind_speed_range)
 
     return aep
