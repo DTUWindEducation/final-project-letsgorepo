@@ -83,7 +83,7 @@ windrose = plot_wind_rose(df_wind_speed, df_wind_direction)
 from assessment.aep import calc_aep, calc_aep_per_speed
 AEP_for_turb = calc_aep(filtered, pdf_range_period)
 print(f"Annual Energy production from {time_start} to {time_end} is {AEP_for_turb} MWh")
-result = calc_aep_per_speed(filtered, pdf_range_period, turbine)
+result = calc_aep_per_speed(filtered, pdf_range_period, coord)
 
 
 #_____End timer____
