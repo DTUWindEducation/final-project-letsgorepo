@@ -89,7 +89,7 @@ open_nc_files.py
 
 ## Code Architecture (include diagram)*
 
-![Program architecture](inputs/Program_architecture.png)
+![Program_architecture](Program_architecture.jpeg)
 
 <div style="font-style: italic; text-align: center;">
 
