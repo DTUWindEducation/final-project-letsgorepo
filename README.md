@@ -39,6 +39,12 @@ In this module we have three functions, which are
 
 ---
 
+`weibull`
+In this module we fit Weibull distribution for wind speed at a given location (inside the box) and a given height.
+Then plot the wind speed distribution (histogram vs. fitted Weibull distribution) at a given location (inside the box) and a given height.
+
+---
+
 `wind_rose`: Plot wind rose diagram that showes the frequencies of different wind direction at a given location (inside the box) and a given height.
 
 ---
