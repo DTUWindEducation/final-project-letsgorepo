@@ -1,5 +1,6 @@
 # ----Import packages
 import numpy as np
+import pandas as pd
 from pathlib import Path            # For identifying path of file
 from scipy.interpolate import LinearNDInterpolator  # For interpolation
 from scipy.interpolate import RegularGridInterpolator  # For interpolation
@@ -15,23 +16,47 @@ def interpolate_speed(wr_data_df, target_coord):
     Y = np.sort(wr_data_df['latitude'].unique())   # lat
     T = np.sort(wr_data_df['time'].unique())       # time
 
-    # Pivot to make a 3D array (lon x lat x time)
-    # Assume there is one measurement per (lon, lat, time)
-    reshaped = wr_data_df.pivot_table(
-        index=['longitude', 'latitude', 'time'],
-        values='ref_wind_speed'
-    ).unstack().sort_index()
+    dir_10_interp = []
+    dir_100_interp = []
 
-    # Convert to 3D array
-    ts_for_4_points = reshaped.values.reshape(len(X), len(Y), len(T))
+    for time in T:
+        subset = wr_data_df[wr_data_df['time'] == time]
 
-    # Build interpolator (note: only over lon/lat)
-    interp = RegularGridInterpolator((X, Y), ts_for_4_points)
+        # Separate by height
+        df_10 = subset[subset['height'] == 10]
+        df_100 = subset[subset['height'] == 100]
 
-    # Interpolate for the time series at target location
-    ts_interp = interp(target_coord)  # shape: (num_time_steps,)
+        # Create 2D grids (longitude x latitude) for wind direction
+        grid_10 = df_10.pivot(index='longitude', columns='latitude', values='ref_wind_speed').values
+        grid_100 = df_100.pivot(index='longitude', columns='latitude', values='ref_wind_speed').values
 
-    return ts_interp
+        # Create interpolators
+        interp_10 = RegularGridInterpolator((X, Y), grid_10)
+        interp_100 = RegularGridInterpolator((X, Y), grid_100)
+
+        # Interpolate at the given target coordinate
+        dir_10_interp.append(interp_10(target_coord))
+        dir_100_interp.append(interp_100(target_coord))
+
+    # Build result DataFrame
+    result_df = pd.DataFrame({
+        'time': T,
+        'wind_speed_10m': np.array(dir_10_interp).flatten(),
+        'wind_speed_100m': np.array(dir_100_interp).flatten()
+    })
+
+    # save result
+    # --- Define paths ---
+    current_dir = Path(__file__).parent.resolve()  # Folder where the script is located
+    output_dir = current_dir.parent.parent / "outputs"  # Go up 2 levels, then into "output"
+    # --- Create the output folder if it doesn't exist ---
+    output_dir.mkdir(exist_ok=True)  
+ 
+    # --- Save `result_df` to CSV in the output folder ---
+    output_file = output_dir / "windspeed_interpolated_results.csv"  # Define filename
+    result_df.to_csv(output_file, index=False)  # Save as CSV (no index)
+
+    return result_df
 
 
 def interpolate_direction(wr_data_df, target_coord):
@@ -42,24 +67,48 @@ def interpolate_direction(wr_data_df, target_coord):
     X = np.sort(wr_data_df['longitude'].unique())  # lon
     Y = np.sort(wr_data_df['latitude'].unique())   # lat
     T = np.sort(wr_data_df['time'].unique())       # time
+    
+    dir_10_interp = []
+    dir_100_interp = []
 
-    # Pivot to make a 3D array (lon x lat x time)
-    # Assume there is one measurement per (lon, lat, time)
-    reshaped = wr_data_df.pivot_table(
-        index=['longitude', 'latitude', 'time'],
-        values='ref_wind_direction'
-    ).unstack().sort_index()
+    for time in T:
+        subset = wr_data_df[wr_data_df['time'] == time]
 
-    # Convert to 3D array
-    ts_for_4_points = reshaped.values.reshape(len(X), len(Y), len(T))
+        # Separate by height
+        df_10 = subset[subset['height'] == 10]
+        df_100 = subset[subset['height'] == 100]
 
-    # Build interpolator (note: only over lon/lat)
-    interp = RegularGridInterpolator((X, Y), ts_for_4_points)
+        # Create 2D grids (longitude x latitude) for wind direction
+        grid_10 = df_10.pivot(index='longitude', columns='latitude', values='ref_wind_direction').values
+        grid_100 = df_100.pivot(index='longitude', columns='latitude', values='ref_wind_direction').values
 
-    # Interpolate for the time series at target location
-    ts_interp = interp(target_coord)  # shape: (num_time_steps,)
+        # Create interpolators
+        interp_10 = RegularGridInterpolator((X, Y), grid_10)
+        interp_100 = RegularGridInterpolator((X, Y), grid_100)
 
-    return ts_interp
+        # Interpolate at the given target coordinate
+        dir_10_interp.append(interp_10(target_coord))
+        dir_100_interp.append(interp_100(target_coord))
+
+    # Build result DataFrame
+    result_df = pd.DataFrame({
+        'time': T,
+        'wind_direction_10m': np.array(dir_10_interp).flatten(),
+        'wind_direction_100m': np.array(dir_100_interp).flatten()
+    })
+
+    # save result
+    # --- Define paths ---
+    current_dir = Path(__file__).parent.resolve()  # Folder where the script is located
+    output_dir = current_dir.parent.parent / "outputs"  # Go up 2 levels, then into "output"
+    # --- Create the output folder if it doesn't exist ---
+    output_dir.mkdir(exist_ok=True)  
+ 
+    # --- Save `result_df` to CSV in the output folder ---
+    output_file = output_dir / "winddirection_interpolated_results.csv"  # Define filename
+    result_df.to_csv(output_file, index=False)  # Save as CSV (no index)
+
+    return result_df
 
 
 def plot_interpolation(int_ws, int_wd, target_coord):
